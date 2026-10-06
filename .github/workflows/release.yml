@@ -70,25 +70,28 @@ jobs:
         run: |
           set -euo pipefail
           name="soroban-lint-${RELEASE_TAG}-${{ matrix.target }}"
-          mkdir -p "dist/${name}"
-          cp "target/${{ matrix.target }}/release/soroban-lint" "dist/${name}/"
-          cp README.md LICENSE-MIT LICENSE-APACHE "dist/${name}/"
-          tar -C dist -czf "dist/${name}.tar.gz" "${name}"
+          mkdir -p "pack/${name}" dist
+          cp "target/${{ matrix.target }}/release/soroban-lint" "pack/${name}/"
+          cp README.md LICENSE-MIT LICENSE-APACHE "pack/${name}/"
+          tar -C pack -czf "dist/${name}.tar.gz" "${name}"
 
       - name: Package (windows)
         if: matrix.ext == 'zip'
         shell: pwsh
         run: |
           $name = "soroban-lint-$env:RELEASE_TAG-${{ matrix.target }}"
-          New-Item -ItemType Directory -Force -Path "dist/$name" | Out-Null
-          Copy-Item "target/${{ matrix.target }}/release/soroban-lint.exe" "dist/$name/"
-          Copy-Item README.md, LICENSE-MIT, LICENSE-APACHE "dist/$name/"
-          Compress-Archive -Path "dist/$name" -DestinationPath "dist/$name.zip" -Force
+          New-Item -ItemType Directory -Force -Path "pack/$name" | Out-Null
+          New-Item -ItemType Directory -Force -Path "dist" | Out-Null
+          Copy-Item "target/${{ matrix.target }}/release/soroban-lint.exe" "pack/$name/"
+          Copy-Item README.md, LICENSE-MIT, LICENSE-APACHE "pack/$name/"
+          Compress-Archive -Path "pack/$name" -DestinationPath "dist/$name.zip" -Force
 
       - uses: actions/upload-artifact@v4
         with:
           name: dist-${{ matrix.target }}
-          path: dist/*
+          # Only the archive: the staging directory must not be uploaded, or it
+          # reappears in the release job and gh tries to attach a directory.
+          path: dist/
           if-no-files-found: error
 
   release:
@@ -105,6 +108,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if [ -n "$(find dist -mindepth 1 -maxdepth 1 -type d -print -quit)" ]; then
+            echo "::error::a directory leaked into dist/; release assets must be files only"
+            ls -l dist
+            exit 1
+          fi
           cd dist
           for archive in *.tar.gz *.zip; do
             sha256sum "$archive" > "$archive.sha256"
