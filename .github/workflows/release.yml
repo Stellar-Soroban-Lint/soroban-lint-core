@@ -136,11 +136,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            gh release upload "$RELEASE_TAG" dist/* --clobber
-            gh release edit "$RELEASE_TAG" --notes-file notes.md
+          # This job has no checkout, so the repository must be passed explicitly.
+          repo="$GITHUB_REPOSITORY"
+          if gh release view "$RELEASE_TAG" --repo "$repo" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" dist/* --repo "$repo" --clobber
+            gh release edit "$RELEASE_TAG" --repo "$repo" --notes-file notes.md
           else
             gh release create "$RELEASE_TAG" dist/* \
+              --repo "$repo" \
               --title "$RELEASE_TAG" \
               --notes-file notes.md
           fi
