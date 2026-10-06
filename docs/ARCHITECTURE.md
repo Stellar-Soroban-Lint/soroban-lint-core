@@ -46,6 +46,19 @@ is **27.0.x–28.0.0**. Fixture crates compile against the pinned SDK in a dedic
 "vulnerable" and "safe" samples are provably valid Soroban code. `soroban-sdk` is **not** a
 dependency of `soroban-lint-core`.
 
+## WASM build (WASM-cleanliness gate)
+
+Measured on this repository (toolchain 1.99.0, `release` profile, `panic = "abort"`, `opt-level = "s"`, `lto = true`):
+
+| Artifact | Size |
+|---|---:|
+| `cargo build --target wasm32-unknown-unknown -p soroban-lint-wasm --release` | 38,203 bytes |
+| `wasm-pack build --target web` → `pkg/soroban_lint_wasm_bg.wasm` | 20,462 bytes |
+| after `wasm-opt -Oz` (binaryen version_123) | 14,306 bytes |
+
+This build succeeding is the check that no filesystem, `clap`, or `walkdir` dependency has
+leaked into `soroban-lint-core`.
+
 ## Determinism
 
 Diagnostics are sorted by the total order `(file, start_line, start_column, rule_id)` and

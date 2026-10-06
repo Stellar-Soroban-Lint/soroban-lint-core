@@ -55,6 +55,22 @@ pub(crate) fn push_diag(
     });
 }
 
+/// Call `f` for every function inside a `#[contractimpl]` impl block.
+pub(crate) fn for_each_contract_fn<'a>(ast: &'a syn::File, mut f: impl FnMut(&'a syn::ImplItemFn)) {
+    for item in &ast.items {
+        if let syn::Item::Impl(imp) = item {
+            if !crate::analysis::has_attr(&imp.attrs, "contractimpl") {
+                continue;
+            }
+            for it in &imp.items {
+                if let syn::ImplItem::Fn(m) = it {
+                    f(m);
+                }
+            }
+        }
+    }
+}
+
 /// Compile-checked rule template referenced by `docs/WRITING_RULES.md`.
 ///
 /// This module is only built under `cfg(test)`, which guarantees the template
@@ -110,21 +126,5 @@ mod template {
     #[test]
     fn example_rule_compiles_and_reports_metadata() {
         assert_eq!(ExampleRule.meta().id, "SL900");
-    }
-}
-
-/// Call `f` for every function inside a `#[contractimpl]` impl block.
-pub(crate) fn for_each_contract_fn<'a>(ast: &'a syn::File, mut f: impl FnMut(&'a syn::ImplItemFn)) {
-    for item in &ast.items {
-        if let syn::Item::Impl(imp) = item {
-            if !crate::analysis::has_attr(&imp.attrs, "contractimpl") {
-                continue;
-            }
-            for it in &imp.items {
-                if let syn::ImplItem::Fn(m) = it {
-                    f(m);
-                }
-            }
-        }
     }
 }
