@@ -7,12 +7,19 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release tag to build and publish (e.g. v0.1.0)"
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 env:
   CARGO_TERM_COLOR: always
+  RELEASE_TAG: ${{ github.event.inputs.version || github.ref_name }}
 
 jobs:
   build:
@@ -62,7 +69,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          name="soroban-lint-${GITHUB_REF_NAME}-${{ matrix.target }}"
+          name="soroban-lint-${RELEASE_TAG}-${{ matrix.target }}"
           mkdir -p "dist/${name}"
           cp "target/${{ matrix.target }}/release/soroban-lint" "dist/${name}/"
           cp README.md LICENSE-MIT LICENSE-APACHE "dist/${name}/"
@@ -72,7 +79,7 @@ jobs:
         if: matrix.ext == 'zip'
         shell: pwsh
         run: |
-          $name = "soroban-lint-$env:GITHUB_REF_NAME-${{ matrix.target }}"
+          $name = "soroban-lint-$env:RELEASE_TAG-${{ matrix.target }}"
           New-Item -ItemType Directory -Force -Path "dist/$name" | Out-Null
           Copy-Item "target/${{ matrix.target }}/release/soroban-lint.exe" "dist/$name/"
           Copy-Item README.md, LICENSE-MIT, LICENSE-APACHE "dist/$name/"
@@ -129,11 +136,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" dist/* --clobber
-            gh release edit "$GITHUB_REF_NAME" --notes-file notes.md
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" dist/* --clobber
+            gh release edit "$RELEASE_TAG" --notes-file notes.md
           else
-            gh release create "$GITHUB_REF_NAME" dist/* \
-              --title "$GITHUB_REF_NAME" \
+            gh release create "$RELEASE_TAG" dist/* \
+              --title "$RELEASE_TAG" \
               --notes-file notes.md
           fi
