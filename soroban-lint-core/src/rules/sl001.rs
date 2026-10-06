@@ -61,6 +61,11 @@ inside macro bodies are invisible, and auth delegated more than one call away is
             if !is_pub(&m.vis) || is_test(&m.attrs) {
                 return;
             }
+            // Soroban's `__constructor` runs once during deployment and needs no
+            // auth, so it is not a missing-authorization signal.
+            if m.sig.ident == "__constructor" {
+                return;
+            }
             let fa = analyze(&m.block);
             if mutation(&fa.calls).is_none() {
                 return;

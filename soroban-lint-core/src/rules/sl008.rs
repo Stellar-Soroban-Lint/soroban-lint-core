@@ -107,7 +107,9 @@ check is low-confidence: valid `#![cfg_attr(not(test), no_std)]` patterns are re
                     || (a.path().is_ident("cfg_attr")
                         && matches!(&a.meta, syn::Meta::List(l) if l.tokens.to_string().contains("no_std"))))
         });
-        if has_contract && !has_no_std {
+        // `#![no_std]` is a crate-root attribute; only check crate roots.
+        let is_crate_root = ctx.file.ends_with("lib.rs") || ctx.file.ends_with("main.rs");
+        if has_contract && is_crate_root && !has_no_std {
             push_diag(
                 out,
                 "SL008",
