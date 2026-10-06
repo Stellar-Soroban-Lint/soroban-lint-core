@@ -1,0 +1,275 @@
+---
+source: soroban-lint-core/tests/snapshots.rs
+expression: "render::sarif(&run(), &reg.metadata())"
+---
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "token.rs"
+                },
+                "region": {
+                  "endColumn": 23,
+                  "endLine": 9,
+                  "startColumn": 12,
+                  "startLine": 9
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`set_balance` mutates state without an authorization check"
+          },
+          "partialFingerprints": {
+            "sorobanLint/v1": "d5363765f962648c"
+          },
+          "ruleId": "SL001"
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "token.rs"
+                },
+                "region": {
+                  "endColumn": 73,
+                  "endLine": 10,
+                  "startColumn": 67,
+                  "startLine": 10
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`unwrap` can panic in a contract function"
+          },
+          "partialFingerprints": {
+            "sorobanLint/v1": "570ce29194a7caad"
+          },
+          "ruleId": "SL002"
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "token.rs"
+                },
+                "region": {
+                  "endColumn": 36,
+                  "endLine": 11,
+                  "startColumn": 20,
+                  "startLine": 11
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "unchecked `+` on integer operands can overflow or divide by zero"
+          },
+          "partialFingerprints": {
+            "sorobanLint/v1": "e83a77f802433129"
+          },
+          "ruleId": "SL003"
+        },
+        {
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "token.rs"
+                },
+                "region": {
+                  "endColumn": 39,
+                  "endLine": 12,
+                  "startColumn": 36,
+                  "startLine": 12
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "persistent/instance write without an `extend_ttl` in the same function"
+          },
+          "partialFingerprints": {
+            "sorobanLint/v1": "a2e0ae235d9d2b36"
+          },
+          "ruleId": "SL005"
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://github.com/Stellar-Soroban-Lint/soroban-lint-core",
+          "name": "soroban-lint",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "A public contract function that writes storage or moves tokens without calling require_auth may let any caller mutate state or move funds they do not own."
+              },
+              "help": {
+                "text": "A public contract function that writes storage or moves tokens without calling require_auth may let any caller mutate state or move funds they do not own.\n\nLimitations: Syntactic and per-file: auth is considered present only if it appears directly in the function or in a same-file helper it calls within one level. Mutations performed inside macro bodies are invisible, and auth delegated more than one call away is missed."
+              },
+              "id": "SL001",
+              "name": "MissingRequireAuth",
+              "properties": {
+                "stability": "stable"
+              },
+              "shortDescription": {
+                "text": "Contract function mutates state without an authorization check"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "In Soroban an unhandled panic aborts the invocation. Explicit panics and indexing are better expressed as Result returns or panic_with_error! so callers get a typed error."
+              },
+              "help": {
+                "text": "In Soroban an unhandled panic aborts the invocation. Explicit panics and indexing are better expressed as Result returns or panic_with_error! so callers get a typed error.\n\nLimitations: Syntactic: indexing is flagged even when the surrounding code proves it in-bounds (hence medium confidence), and panics raised by called functions in other files are not seen. panics inside macro bodies are not expanded."
+              },
+              "id": "SL002",
+              "name": "PanicHazards",
+              "properties": {
+                "stability": "stable"
+              },
+              "shortDescription": {
+                "text": "Contract function contains a call that can panic"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Soroban contracts handle token amounts in fixed-width integers. Wrap-around or division by zero can corrupt accounting."
+              },
+              "help": {
+                "text": "Soroban contracts handle token amounts in fixed-width integers. Wrap-around or division by zero can corrupt accounting.\n\nLimitations: There is no type resolution, so this only fires when both operands carry syntactic integer evidence (literals, explicit annotations, `as` casts). Most values loaded from storage have no such evidence and are NOT flagged, which is the dominant false-negative mode."
+              },
+              "id": "SL003",
+              "name": "UncheckedArithmetic",
+              "properties": {
+                "stability": "experimental"
+              },
+              "shortDescription": {
+                "text": "Arithmetic on syntactically-integer operands without overflow checks"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Growing a stored collection without a visible cap lets a caller inflate ledger entries until writes exceed resource limits, which can brick the entrypoint."
+              },
+              "help": {
+                "text": "Growing a stored collection without a visible cap lets a caller inflate ledger entries until writes exceed resource limits, which can brick the entrypoint.\n\nLimitations: The length bound is detected only as a `.len()` call in the same function; bounds enforced by a helper, a macro, or configuration are invisible, and the storage write is matched by method name rather than type."
+              },
+              "id": "SL004",
+              "name": "UnboundedStorageGrowth",
+              "properties": {
+                "stability": "experimental"
+              },
+              "shortDescription": {
+                "text": "A collection loaded from storage is grown and written back without a bound"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "fullDescription": {
+                "text": "Persistent and instance entries expire. A write that never extends the TTL can let live state lapse and be archived."
+              },
+              "help": {
+                "text": "Persistent and instance entries expire. A write that never extends the TTL can let live state lapse and be archived.\n\nLimitations: Only checks the same function; a TTL extended by a helper or a separate entrypoint is not seen, and `temporary` storage (which is meant to expire) is not flagged."
+              },
+              "id": "SL005",
+              "name": "MissingTtlExtension",
+              "properties": {
+                "stability": "experimental"
+              },
+              "shortDescription": {
+                "text": "Persistent or instance storage is written without extending its TTL"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Temporary storage is evicted aggressively. Holding balances or ownership there can silently lose or reset accounting."
+              },
+              "help": {
+                "text": "Temporary storage is evicted aggressively. Holding balances or ownership there can silently lose or reset accounting.\n\nLimitations: Detection is a name heuristic on the key/value identifiers, so it can flag genuinely ephemeral data that happens to be named similarly, and it misses mis-typed data under innocuous names."
+              },
+              "id": "SL006",
+              "name": "QuestionableStorageType",
+              "properties": {
+                "stability": "experimental"
+              },
+              "shortDescription": {
+                "text": "Temporary storage holds balance/ownership-like data"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "An initializer that can run more than once, or that anyone can call, lets an attacker re-set admin/owner state after deployment."
+              },
+              "help": {
+                "text": "An initializer that can run more than once, or that anyone can call, lets an attacker re-set admin/owner state after deployment.\n\nLimitations: Guards expressed via macros are invisible, and a guard delegated more than one call away is missed. This is a syntactic check, not a reachability analysis."
+              },
+              "id": "SL007",
+              "name": "UnprotectedInitializer",
+              "properties": {
+                "stability": "experimental"
+              },
+              "shortDescription": {
+                "text": "Initializer writes state with no already-initialized guard and no auth"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Soroban contracts run in a constrained WASM sandbox; `unsafe` bypasses the guarantees that make the contract auditable, and a missing `#![no_std]` links a std runtime that the host does not provide."
+              },
+              "help": {
+                "text": "Soroban contracts run in a constrained WASM sandbox; `unsafe` bypasses the guarantees that make the contract auditable, and a missing `#![no_std]` links a std runtime that the host does not provide.\n\nLimitations: `unsafe` detection is high-confidence and syntactic. The `#![no_std]` check is low-confidence: valid `#![cfg_attr(not(test), no_std)]` patterns are reported as missing."
+              },
+              "id": "SL008",
+              "name": "UnsafeAndNoStd",
+              "properties": {
+                "stability": "stable"
+              },
+              "shortDescription": {
+                "text": "Contract crate uses `unsafe` or omits `#![no_std]`"
+              }
+            }
+          ],
+          "version": "0.1.0"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

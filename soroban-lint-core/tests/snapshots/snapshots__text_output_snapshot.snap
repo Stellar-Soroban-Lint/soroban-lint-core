@@ -1,0 +1,12 @@
+---
+source: soroban-lint-core/tests/snapshots.rs
+expression: "render::text(&run())"
+---
+token.rs:9:12: error SL001 (medium): `set_balance` mutates state without an authorization check
+  help: call `require_auth()` (or `require_auth_for_args`) for the authorizing address before the first mutation
+token.rs:10:67: warning SL002 (high): `unwrap` can panic in a contract function
+  help: return `Result<_, ContractError>` and use `?`, or use `panic_with_error!`
+token.rs:11:20: warning SL003 (low): unchecked `+` on integer operands can overflow or divide by zero
+  help: use `checked_add`/`checked_sub`/`checked_mul` or `saturating_*`, or enable `overflow-checks` in the release profile
+token.rs:12:36: info SL005 (medium): persistent/instance write without an `extend_ttl` in the same function
+  help: call `extend_ttl(&key, threshold, extend_to)` after the write

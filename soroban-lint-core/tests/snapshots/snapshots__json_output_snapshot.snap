@@ -1,0 +1,61 @@
+---
+source: soroban-lint-core/tests/snapshots.rs
+expression: "render::json(&run())"
+---
+{
+  "diagnostics": [
+    {
+      "confidence": "medium",
+      "end_column": 23,
+      "end_line": 9,
+      "file": "token.rs",
+      "fix": "addr.require_auth()",
+      "help": "call `require_auth()` (or `require_auth_for_args`) for the authorizing address before the first mutation",
+      "message": "`set_balance` mutates state without an authorization check",
+      "rule_id": "SL001",
+      "severity": "error",
+      "start_column": 12,
+      "start_line": 9
+    },
+    {
+      "confidence": "high",
+      "end_column": 73,
+      "end_line": 10,
+      "file": "token.rs",
+      "fix": null,
+      "help": "return `Result<_, ContractError>` and use `?`, or use `panic_with_error!`",
+      "message": "`unwrap` can panic in a contract function",
+      "rule_id": "SL002",
+      "severity": "warning",
+      "start_column": 67,
+      "start_line": 10
+    },
+    {
+      "confidence": "low",
+      "end_column": 36,
+      "end_line": 11,
+      "file": "token.rs",
+      "fix": null,
+      "help": "use `checked_add`/`checked_sub`/`checked_mul` or `saturating_*`, or enable `overflow-checks` in the release profile",
+      "message": "unchecked `+` on integer operands can overflow or divide by zero",
+      "rule_id": "SL003",
+      "severity": "warning",
+      "start_column": 20,
+      "start_line": 11
+    },
+    {
+      "confidence": "medium",
+      "end_column": 39,
+      "end_line": 12,
+      "file": "token.rs",
+      "fix": null,
+      "help": "call `extend_ttl(&key, threshold, extend_to)` after the write",
+      "message": "persistent/instance write without an `extend_ttl` in the same function",
+      "rule_id": "SL005",
+      "severity": "info",
+      "start_column": 36,
+      "start_line": 12
+    }
+  ],
+  "version": "1"
+}

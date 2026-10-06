@@ -55,6 +55,64 @@ pub(crate) fn push_diag(
     });
 }
 
+/// Compile-checked rule template referenced by `docs/WRITING_RULES.md`.
+///
+/// This module is only built under `cfg(test)`, which guarantees the template
+/// actually compiles rather than rotting in documentation.
+#[cfg(test)]
+mod template {
+    use super::{for_each_contract_fn, push_diag};
+    use crate::analysis::{analyze, is_pub, is_test, loc};
+    use crate::context::Context;
+    use crate::diagnostic::{Confidence, Diagnostic, RuleMeta, Severity, Stability};
+    use crate::registry::Rule;
+
+    /// Example rule. Replace the metadata and `check` body.
+    pub struct ExampleRule;
+
+    impl Rule for ExampleRule {
+        fn meta(&self) -> RuleMeta {
+            RuleMeta {
+                id: "SL900",
+                name: "example-rule",
+                description: "Example rule used as a template in the docs",
+                default_severity: Severity::Warning,
+                default_confidence: Confidence::Low,
+                stability: Stability::Experimental,
+                rationale: "Why the pattern matters, in the same paragraph as the limitation.",
+                limitations: "What this rule does not see, and the dominant false-negative mode.",
+            }
+        }
+
+        fn check(&self, ctx: &Context<'_>, out: &mut Vec<Diagnostic>) {
+            for_each_contract_fn(ctx.ast, |m| {
+                // Scope guard: public contract functions only.
+                if !is_pub(&m.vis) || is_test(&m.attrs) {
+                    return;
+                }
+                let fa = analyze(&m.block);
+                if fa.calls.iter().any(|c| c.name == "example_trigger") {
+                    push_diag(
+                        out,
+                        "SL900",
+                        Severity::Warning,
+                        Confidence::Low,
+                        "example finding",
+                        loc(m.sig.ident.span()),
+                        Some("how to fix it"),
+                        None,
+                    );
+                }
+            });
+        }
+    }
+
+    #[test]
+    fn example_rule_compiles_and_reports_metadata() {
+        assert_eq!(ExampleRule.meta().id, "SL900");
+    }
+}
+
 /// Call `f` for every function inside a `#[contractimpl]` impl block.
 pub(crate) fn for_each_contract_fn<'a>(ast: &'a syn::File, mut f: impl FnMut(&'a syn::ImplItemFn)) {
     for item in &ast.items {

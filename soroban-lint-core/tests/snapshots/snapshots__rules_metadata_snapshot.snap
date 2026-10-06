@@ -1,0 +1,89 @@
+---
+source: soroban-lint-core/tests/snapshots.rs
+expression: "render::rules_json(&Registry::default_set().metadata())"
+---
+{
+  "rules": [
+    {
+      "default_confidence": "medium",
+      "default_severity": "error",
+      "description": "Contract function mutates state without an authorization check",
+      "id": "SL001",
+      "limitations": "Syntactic and per-file: auth is considered present only if it appears directly in the function or in a same-file helper it calls within one level. Mutations performed inside macro bodies are invisible, and auth delegated more than one call away is missed.",
+      "name": "missing-require-auth",
+      "rationale": "A public contract function that writes storage or moves tokens without calling require_auth may let any caller mutate state or move funds they do not own.",
+      "stability": "stable"
+    },
+    {
+      "default_confidence": "high",
+      "default_severity": "warning",
+      "description": "Contract function contains a call that can panic",
+      "id": "SL002",
+      "limitations": "Syntactic: indexing is flagged even when the surrounding code proves it in-bounds (hence medium confidence), and panics raised by called functions in other files are not seen. panics inside macro bodies are not expanded.",
+      "name": "panic-hazards",
+      "rationale": "In Soroban an unhandled panic aborts the invocation. Explicit panics and indexing are better expressed as Result returns or panic_with_error! so callers get a typed error.",
+      "stability": "stable"
+    },
+    {
+      "default_confidence": "low",
+      "default_severity": "warning",
+      "description": "Arithmetic on syntactically-integer operands without overflow checks",
+      "id": "SL003",
+      "limitations": "There is no type resolution, so this only fires when both operands carry syntactic integer evidence (literals, explicit annotations, `as` casts). Most values loaded from storage have no such evidence and are NOT flagged, which is the dominant false-negative mode.",
+      "name": "unchecked-arithmetic",
+      "rationale": "Soroban contracts handle token amounts in fixed-width integers. Wrap-around or division by zero can corrupt accounting.",
+      "stability": "experimental"
+    },
+    {
+      "default_confidence": "low",
+      "default_severity": "warning",
+      "description": "A collection loaded from storage is grown and written back without a bound",
+      "id": "SL004",
+      "limitations": "The length bound is detected only as a `.len()` call in the same function; bounds enforced by a helper, a macro, or configuration are invisible, and the storage write is matched by method name rather than type.",
+      "name": "unbounded-storage-growth",
+      "rationale": "Growing a stored collection without a visible cap lets a caller inflate ledger entries until writes exceed resource limits, which can brick the entrypoint.",
+      "stability": "experimental"
+    },
+    {
+      "default_confidence": "medium",
+      "default_severity": "info",
+      "description": "Persistent or instance storage is written without extending its TTL",
+      "id": "SL005",
+      "limitations": "Only checks the same function; a TTL extended by a helper or a separate entrypoint is not seen, and `temporary` storage (which is meant to expire) is not flagged.",
+      "name": "missing-ttl-extension",
+      "rationale": "Persistent and instance entries expire. A write that never extends the TTL can let live state lapse and be archived.",
+      "stability": "experimental"
+    },
+    {
+      "default_confidence": "low",
+      "default_severity": "warning",
+      "description": "Temporary storage holds balance/ownership-like data",
+      "id": "SL006",
+      "limitations": "Detection is a name heuristic on the key/value identifiers, so it can flag genuinely ephemeral data that happens to be named similarly, and it misses mis-typed data under innocuous names.",
+      "name": "questionable-storage-type",
+      "rationale": "Temporary storage is evicted aggressively. Holding balances or ownership there can silently lose or reset accounting.",
+      "stability": "experimental"
+    },
+    {
+      "default_confidence": "medium",
+      "default_severity": "warning",
+      "description": "Initializer writes state with no already-initialized guard and no auth",
+      "id": "SL007",
+      "limitations": "Guards expressed via macros are invisible, and a guard delegated more than one call away is missed. This is a syntactic check, not a reachability analysis.",
+      "name": "unprotected-initializer",
+      "rationale": "An initializer that can run more than once, or that anyone can call, lets an attacker re-set admin/owner state after deployment.",
+      "stability": "experimental"
+    },
+    {
+      "default_confidence": "high",
+      "default_severity": "warning",
+      "description": "Contract crate uses `unsafe` or omits `#![no_std]`",
+      "id": "SL008",
+      "limitations": "`unsafe` detection is high-confidence and syntactic. The `#![no_std]` check is low-confidence: valid `#![cfg_attr(not(test), no_std)]` patterns are reported as missing.",
+      "name": "unsafe-and-no-std",
+      "rationale": "Soroban contracts run in a constrained WASM sandbox; `unsafe` bypasses the guarantees that make the contract auditable, and a missing `#![no_std]` links a std runtime that the host does not provide.",
+      "stability": "stable"
+    }
+  ],
+  "version": "1"
+}
