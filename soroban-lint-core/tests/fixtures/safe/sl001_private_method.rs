@@ -1,0 +1,17 @@
+#![no_std]
+use soroban_sdk::{contract, contractimpl, Address, Env};
+
+#[contract]
+pub struct Token;
+
+#[contractimpl]
+impl Token {
+    pub fn set_balance(env: Env, addr: Address, amount: i128) {
+        addr.require_auth();
+        Self::write(&env, &addr, amount);
+    }
+
+    fn write(env: &Env, addr: &Address, amount: i128) {
+        env.storage().persistent().set(addr, &amount);
+    }
+}

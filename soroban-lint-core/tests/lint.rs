@@ -58,6 +58,19 @@ negative!(
     "SL001",
     "sl001_admin_from_storage.rs"
 );
+negative!(
+    sl001_auth_in_free_fn_ok,
+    "SL001",
+    "sl001_auth_in_free_fn.rs"
+);
+// A non-`pub` method of a `#[contractimpl]` block is not a contract entry point.
+negative!(sl001_private_method_ok, "SL001", "sl001_private_method.rs");
+// Auth living only in `#[cfg(test)]` code is not production authorization.
+positive!(
+    sl001_test_helper_is_not_auth,
+    "SL001",
+    "sl001_test_helper_not_auth.rs"
+);
 
 // SL002 — panic hazards
 positive!(sl002_true_positive, "SL002", "sl002_panics.rs");
@@ -66,6 +79,8 @@ negative!(
     "SL002",
     "sl002_panic_with_error.rs"
 );
+// A non-`pub` method of a `#[contractimpl]` block is not a contract entry point.
+negative!(sl002_private_method_ok, "SL002", "sl002_private_method.rs");
 
 // SL003 — unchecked arithmetic
 positive!(sl003_true_positive, "SL003", "sl003_arith.rs");

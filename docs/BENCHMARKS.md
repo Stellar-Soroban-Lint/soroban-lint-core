@@ -87,3 +87,33 @@ git clone https://github.com/stellar/soroban-examples
 cd soroban-examples && git checkout 03d42aa6b973dcf3a453a99d0c6a6e8d25a196e2
 soroban-lint check . --experimental --format json --fail-on never
 ```
+
+## Mutation testing (SL001, SL002)
+
+Per `SPEC.md` §5, `cargo-mutants` runs over the two security-critical rules with every survivor
+triaged. Command:
+
+```bash
+cargo mutants --no-times \
+  --file soroban-lint-core/src/rules/sl001.rs \
+  --file soroban-lint-core/src/rules/sl002.rs
+```
+
+Result: **16 mutants tested — 14 caught, 2 unviable, 0 missed** (`cargo-mutants 27.1.0`).
+
+The first run left 5 survivors. Each was a genuine coverage gap, so each was killed with a
+fixture rather than waived:
+
+| Survivor | Gap it exposed | Fixture added |
+|---|---|---|
+| `sl001.rs:38` delete `Item::Fn` arm | same-file **free-function** helper with auth was never exercised | `safe/sl001_auth_in_free_fn.rs` |
+| `sl001.rs:39` delete `!` in `!is_test` | a `#[cfg(test)]` free fn must not be treated as an auth helper | `vulnerable/sl001_test_helper_not_auth.rs` |
+| `sl001.rs:49` `&&`→`\|\|` | a `#[cfg(test)]` **method** must not be treated as an auth helper | `vulnerable/sl001_test_helper_not_auth.rs` |
+| `sl001.rs:61` `\|\|`→`&&` | a non-`pub` method is not a contract entry point | `safe/sl001_private_method.rs` |
+| `sl002.rs:32` `\|\|`→`&&` | a non-`pub` method is not a contract entry point | `safe/sl002_private_method.rs` |
+
+The two **unviable** mutants are `meta() -> Default::default()` for both rules: `RuleMeta`
+intentionally has no `Default` impl, so the mutant does not compile. They are not survivors.
+
+After the fixtures were added the run is clean, and the same command is what CI/the reviewer
+should re-run to reproduce it.

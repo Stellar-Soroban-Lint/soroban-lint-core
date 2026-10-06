@@ -5,3 +5,4 @@ node_modules/
 dist/
 *.wasm
 pkg/
+/mutants.out
