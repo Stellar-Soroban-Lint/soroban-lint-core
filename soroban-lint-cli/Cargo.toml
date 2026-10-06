@@ -1,0 +1,25 @@
+[package]
+name = "soroban-lint-cli"
+description = "Command-line interface for soroban-lint."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[[bin]]
+name = "soroban-lint"
+path = "src/main.rs"
+
+[dependencies]
+soroban-lint-core = { path = "../soroban-lint-core", version = "0.1.0" }
+clap.workspace = true
+walkdir.workspace = true
+globset.workspace = true
+anyhow.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+assert_cmd = "2"
+predicates = "3"
