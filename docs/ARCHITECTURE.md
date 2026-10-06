@@ -13,7 +13,7 @@ source text
   → rule visitors (syn::visit::Visit, read-only)
   → Vec<Diagnostic>            (sorted by file, line, col, rule_id; deduped)
   → text | JSON | SARIF        (CLI)
-  → WASM (wasm-bindgen)        (portal, later phase)
+  → WASM (wasm-bindgen)        (soroban-lint-portal, in-browser)
 ```
 
 ## Workspace layout (the `soroban-lint-core` repository)
@@ -52,9 +52,18 @@ Measured on this repository (toolchain 1.99.0, `release` profile, `panic = "abor
 
 | Artifact | Size |
 |---|---:|
-| `cargo build --target wasm32-unknown-unknown -p soroban-lint-wasm --release` | 38,203 bytes |
-| `wasm-pack build --target web` → `pkg/soroban_lint_wasm_bg.wasm` | 20,462 bytes |
-| after `wasm-opt -Oz` (binaryen version_123) | 14,306 bytes |
+| `cargo build --target wasm32-unknown-unknown -p soroban-lint-wasm --release` | 1,301,287 bytes |
+| `wasm-pack build --target web` → `pkg/soroban_lint_wasm_bg.wasm` | 1,208,552 bytes |
+| after `wasm-opt -Oz` (binaryen version_123) | 711,253 bytes |
+| `wasm-opt -Oz` output, gzip -9 (what the portal actually transfers) | 240,339 bytes |
+
+These moved from ~14 KB to ~711 KB when the WASM surface grew from `version()` alone to the real
+linter (`lintSource`, `rulesJson`): the parser and the rule set now ship to the browser. `syn` and
+`serde_json` dominate the size; the gzip figure is the one that matters for page weight.
+
+The exports mirror the CLI's JSON contract exactly — `lintSource(path, source, experimental)`
+returns what `soroban-lint check --format json` prints, and `rulesJson()` returns what
+`soroban-lint rules --format json` prints — so the portal and the CLI cannot drift apart silently.
 
 This build succeeding is the check that no filesystem, `clap`, or `walkdir` dependency has
 leaked into `soroban-lint-core`.
