@@ -15,8 +15,8 @@ fn validate(src_name: &str, src: &str) {
         ..Config::default()
     };
     let diags = lint_source(src_name, src, &cfg, &reg);
-    let sarif: Value = serde_json::from_str(&render::sarif(&diags, &reg.metadata()))
-        .expect("sarif is valid json");
+    let sarif: Value =
+        serde_json::from_str(&render::sarif(&diags, &reg.metadata())).expect("sarif is valid json");
 
     let errs: Vec<String> = match compiled.validate(&sarif) {
         Ok(()) => Vec::new(),
