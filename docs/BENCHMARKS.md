@@ -1,7 +1,9 @@
 # Benchmarks — real-code corpus
 
 Every finding below was produced by the real CLI, not hand-written. Nothing was deleted to
-make the table look better.
+make the table look better. Counts are inputs to a promotion decision, not evidence of coverage:
+
+> soroban-lint performs syntactic, per-file analysis of Soroban contract source using the Rust AST. It flags patterns associated with missing authorization checks, panic paths, unchecked arithmetic, and storage hazards in `#[contractimpl]` functions. It does not expand macros, resolve types, or follow calls across files, so it can miss real issues (false negatives) and flag safe code (false positives). A clean report is not evidence a contract is secure, and this tool is not a substitute for an audit.
 
 ## Corpus
 
