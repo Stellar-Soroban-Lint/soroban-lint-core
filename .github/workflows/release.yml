@@ -1,0 +1,139 @@
+name: Release
+
+# Builds the `soroban-lint` CLI for each supported runner platform and publishes
+# the archives (plus SHA-256 checksums) as release assets. `soroban-lint-action`
+# downloads an asset from here and verifies its checksum before running it.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+            ext: tar.gz
+          - os: ubuntu-24.04
+            target: aarch64-unknown-linux-gnu
+            ext: tar.gz
+          - os: macos-14 # Apple silicon; also cross-builds the x86_64 target.
+            target: aarch64-apple-darwin
+            ext: tar.gz
+          - os: macos-14
+            target: x86_64-apple-darwin
+            ext: tar.gz
+          - os: windows-2022
+            target: x86_64-pc-windows-msvc
+            ext: zip
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add Rust target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Install the aarch64 Linux cross linker
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> "$GITHUB_ENV"
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Build
+        run: cargo build --release --locked -p soroban-lint-cli --target ${{ matrix.target }}
+
+      - name: Package (unix)
+        if: matrix.ext == 'tar.gz'
+        shell: bash
+        run: |
+          set -euo pipefail
+          name="soroban-lint-${GITHUB_REF_NAME}-${{ matrix.target }}"
+          mkdir -p "dist/${name}"
+          cp "target/${{ matrix.target }}/release/soroban-lint" "dist/${name}/"
+          cp README.md LICENSE-MIT LICENSE-APACHE "dist/${name}/"
+          tar -C dist -czf "dist/${name}.tar.gz" "${name}"
+
+      - name: Package (windows)
+        if: matrix.ext == 'zip'
+        shell: pwsh
+        run: |
+          $name = "soroban-lint-$env:GITHUB_REF_NAME-${{ matrix.target }}"
+          New-Item -ItemType Directory -Force -Path "dist/$name" | Out-Null
+          Copy-Item "target/${{ matrix.target }}/release/soroban-lint.exe" "dist/$name/"
+          Copy-Item README.md, LICENSE-MIT, LICENSE-APACHE "dist/$name/"
+          Compress-Archive -Path "dist/$name" -DestinationPath "dist/$name.zip" -Force
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.target }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    name: publish
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate and verify checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dist
+          for archive in *.tar.gz *.zip; do
+            sha256sum "$archive" > "$archive.sha256"
+          done
+          sha256sum --check --strict ./*.sha256
+          ls -l
+
+      - name: Write release notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > notes.md <<'EOF'
+          Prebuilt `soroban-lint` binaries for each supported platform
+          (`x86_64`/`aarch64` Linux, `x86_64`/`aarch64` macOS, `x86_64` Windows).
+
+          Every archive ships with a sibling `.sha256` file. Verify it before running the binary:
+
+          ```bash
+          sha256sum --check <archive>.sha256
+          ```
+
+          soroban-lint performs syntactic, per-file analysis of Soroban contract source using the Rust AST. It flags patterns associated with missing authorization checks, panic paths, unchecked arithmetic, and storage hazards in `#[contractimpl]` functions. It does not expand macros, resolve types, or follow calls across files, so it can miss real issues (false negatives) and flag safe code (false positives). A clean report is not evidence a contract is secure, and this tool is not a substitute for an audit.
+          EOF
+          cat notes.md
+
+      - name: Publish release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/* --clobber
+            gh release edit "$GITHUB_REF_NAME" --notes-file notes.md
+          else
+            gh release create "$GITHUB_REF_NAME" dist/* \
+              --title "$GITHUB_REF_NAME" \
+              --notes-file notes.md
+          fi
