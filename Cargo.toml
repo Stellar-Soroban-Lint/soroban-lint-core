@@ -5,7 +5,7 @@ members = ["soroban-lint-core", "soroban-lint-cli", "soroban-lint-wasm"]
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.81.0"
+rust-version = "1.96.0"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/Stellar-Soroban-Lint/soroban-lint-core"
 homepage = "https://github.com/Stellar-Soroban-Lint/soroban-lint-core"

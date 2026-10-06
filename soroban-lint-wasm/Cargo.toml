@@ -11,6 +11,11 @@ homepage.workspace = true
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[package.metadata.wasm-pack.profile.release]
+# `wasm-opt` is applied separately in the release workflow; the build must not
+# depend on downloading binaryen at package time.
+wasm-opt = false
+
 [dependencies]
 soroban-lint-core = { path = "../soroban-lint-core", version = "0.1.0" }
 wasm-bindgen.workspace = true
