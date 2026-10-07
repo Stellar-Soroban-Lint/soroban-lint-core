@@ -1,8 +1,8 @@
 # soroban-lint-core
 
 Syntactic, per-file static analysis for Soroban smart contracts, with a CLI and a
-WASM build. Part of the `Stellar-Soroban-Lint` project (core engine, GitHub Action,
-playground).
+WASM build. The engine behind [`soroban-lint-action`](https://github.com/Stellar-Soroban-Lint/soroban-lint-action)
+and the [playground](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal).
 
 > soroban-lint performs syntactic, per-file analysis of Soroban contract source using the Rust AST. It flags patterns associated with missing authorization checks, panic paths, unchecked arithmetic, and storage hazards in `#[contractimpl]` functions. It does not expand macros, resolve types, or follow calls across files, so it can miss real issues (false negatives) and flag safe code (false positives). A clean report is not evidence a contract is secure, and this tool is not a substitute for an audit.
 
@@ -82,3 +82,9 @@ cargo build --target wasm32-unknown-unknown -p soroban-lint-wasm --release
 - `docs/ARCHITECTURE.md` — data flow and supported SDK range.
 - `docs/WRITING_RULES.md` — how to add a rule.
 - `docs/BENCHMARKS.md` — real-corpus results and triage.
+
+## Related repositories
+
+- [`soroban-lint-action`](https://github.com/Stellar-Soroban-Lint/soroban-lint-action) — GitHub Action.
+- [`soroban-lint-portal`](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal) — browser playground running this crate as WebAssembly.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).
