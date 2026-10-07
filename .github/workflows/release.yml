@@ -94,9 +94,57 @@ jobs:
           path: dist/
           if-no-files-found: error
 
+  wasm:
+    name: wasm-package
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: wasm
+
+      - name: Install wasm-pack and binaryen
+        run: |
+          set -euo pipefail
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+          sudo apt-get update
+          sudo apt-get install -y binaryen
+
+      - name: Build the wasm package
+        run: wasm-pack build soroban-lint-wasm --target web --release --out-dir pkg
+
+      - name: Optimize with wasm-opt
+        run: |
+          set -euo pipefail
+          wasm-opt -Oz \
+            --enable-bulk-memory \
+            --enable-nontrapping-float-to-int \
+            -o soroban-lint-wasm/pkg/soroban_lint_wasm_bg.wasm \
+            soroban-lint-wasm/pkg/soroban_lint_wasm_bg.wasm
+
+      - name: Package
+        shell: bash
+        run: |
+          set -euo pipefail
+          name="soroban-lint-wasm-${RELEASE_TAG}"
+          mkdir -p "pack/${name}" dist
+          cp -r soroban-lint-wasm/pkg/. "pack/${name}/"
+          tar -C pack -czf "dist/${name}.tar.gz" "${name}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-wasm
+          path: dist/
+          if-no-files-found: error
+
   release:
     name: publish
-    needs: build
+    needs: [build, wasm]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/download-artifact@v4
@@ -129,6 +177,9 @@ jobs:
           (`x86_64`/`aarch64` Linux, `x86_64`/`aarch64` macOS, `x86_64` Windows).
 
           Every archive ships with a sibling `.sha256` file. Verify it before running the binary:
+
+          The `soroban-lint-wasm-*.tar.gz` asset is the `wasm-pack --target web` package the portal
+          consumes (`soroban_lint_wasm.js`, the typings, and the `wasm-opt -Oz` binary).
 
           ```bash
           sha256sum --check <archive>.sha256
