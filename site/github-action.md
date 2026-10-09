@@ -54,21 +54,21 @@ If you fork a repository and open a PR against the upstream, you will see the li
 ```yaml
       - uses: Stellar-Soroban-Lint/soroban-lint-action@v0
         with:
-          version: v0.1.1
+          version: v0.1.2
           path: contracts
-          # SHA-256 of soroban-lint-v0.1.1-x86_64-unknown-linux-gnu.tar.gz
-          checksum: 3b438d69726f2623adb4b9e8daf20c43741a1b1f778392e3d38401f6b0dc41d5
+          # SHA-256 of soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz
+          checksum: c2b2bcf5f01d2591b44a411b7c6724b4cc0c00671a8062e6a82deb26cea89538
 ```
 
-Pin both the tag and the digest for your runner platform. The digests published with `v0.1.1`:
+Pin both the tag and the digest for your runner platform. The digests published with `v0.1.2`:
 
 | Platform | SHA-256 |
 |---|---|
-| `x86_64-unknown-linux-gnu` | <code class="sl-digest">3b438d69726f2623adb4b9e8daf20c43741a1b1f778392e3d38401f6b0dc41d5</code> |
-| `aarch64-unknown-linux-gnu` | <code class="sl-digest">846724c31219638d79cbb247df625f4839883edd4716dc963d8300a840def75d</code> |
-| `x86_64-apple-darwin` | <code class="sl-digest">22caf9ab1283dd804bcd79508ec3c290ce0fa5101157449a17afa6e576d1ddfa</code> |
-| `aarch64-apple-darwin` | <code class="sl-digest">1a13c896babd573b1750fa73d952227bc381e5a27ddfc8a8bb66eb1c00f299e0</code> |
-| `x86_64-pc-windows-msvc` | <code class="sl-digest">d9a67c94605fb0cba778b1606b1628be3961c93f0348d825085e3eeb74a103fb</code> |
+| `x86_64-unknown-linux-gnu` | <code class="sl-digest">c2b2bcf5f01d2591b44a411b7c6724b4cc0c00671a8062e6a82deb26cea89538</code> |
+| `aarch64-unknown-linux-gnu` | <code class="sl-digest">14e8d240a2f1b3143daaba60f80927a8831bdf2747dacf7d27262f77095ee743</code> |
+| `x86_64-apple-darwin` | <code class="sl-digest">9b4127e0e85e3df1b3a1574ebfe818bcaa3b9479bdd05130a49444e90d4d5760</code> |
+| `aarch64-apple-darwin` | <code class="sl-digest">3b0591184b1ac0c8ed85073e13815f55a41d1b28477cd4f45e0a7260facfbca4</code> |
+| `x86_64-pc-windows-msvc` | <code class="sl-digest">5e678e6c337f7eb0c0128c1f0ecb855f23dbab05b3b88646de6680f4f5b9f27a</code> |
 
 Digests are platform-specific and change on every re-release, because the archives are rebuilt. Read yours from the release page rather than from a copy of this page. Omitting `checksum` still verifies the archive — against the `.sha256` file owned by the release itself. Supplying `checksum` pins it further.
 
@@ -78,7 +78,7 @@ Supported runners: `x86_64`/`aarch64` Linux, `x86_64`/`aarch64` macOS, and `x86_
 
 | Input | Default | Description |
 |---|---|---|
-| `version` | `latest` | `soroban-lint-core` release tag to install, e.g. `v0.1.1`. |
+| `version` | `latest` | `soroban-lint-core` release tag to install, e.g. `v0.1.2`. |
 | `repository` | `Stellar-Soroban-Lint/soroban-lint-core` | Repository that publishes the binaries. |
 | `path` | `.` | File or directory to lint. |
 | `fail-on` | `error` | Minimum severity that fails the step: `error`, `warning`, `info`, `never`. |

@@ -18,32 +18,32 @@ Every release publishes archives for six platform targets, each with a sibling `
 
 | Target | Archive |
 |---|---|
-| `x86_64-unknown-linux-gnu` | `soroban-lint-v0.1.1-x86_64-unknown-linux-gnu.tar.gz` |
-| `aarch64-unknown-linux-gnu` | `soroban-lint-v0.1.1-aarch64-unknown-linux-gnu.tar.gz` |
-| `x86_64-apple-darwin` | `soroban-lint-v0.1.1-x86_64-apple-darwin.tar.gz` |
-| `aarch64-apple-darwin` | `soroban-lint-v0.1.1-aarch64-apple-darwin.tar.gz` |
-| `x86_64-pc-windows-msvc` | `soroban-lint-v0.1.1-x86_64-pc-windows-msvc.zip` |
+| `x86_64-unknown-linux-gnu` | `soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz` |
+| `aarch64-unknown-linux-gnu` | `soroban-lint-v0.1.2-aarch64-unknown-linux-gnu.tar.gz` |
+| `x86_64-apple-darwin` | `soroban-lint-v0.1.2-x86_64-apple-darwin.tar.gz` |
+| `aarch64-apple-darwin` | `soroban-lint-v0.1.2-aarch64-apple-darwin.tar.gz` |
+| `x86_64-pc-windows-msvc` | `soroban-lint-v0.1.2-x86_64-pc-windows-msvc.zip` |
 
-Download from the [releases page](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/tag/v0.1.1), then verify the checksum **before** extracting anything:
+Download from the [releases page](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/tag/v0.1.2), then verify the checksum **before** extracting anything:
 
 ```bash
-curl -LO https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/download/v0.1.1/soroban-lint-v0.1.1-x86_64-unknown-linux-gnu.tar.gz
-curl -LO https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/download/v0.1.1/soroban-lint-v0.1.1-x86_64-unknown-linux-gnu.tar.gz.sha256
+curl -LO https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/download/v0.1.2/soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz
+curl -LO https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/download/v0.1.2/soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz.sha256
 
-sha256sum --check soroban-lint-v0.1.1-x86_64-unknown-linux-gnu.tar.gz.sha256
+sha256sum --check soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz.sha256
 ```
 
 `--check` prints `OK` only when the archive matches the digest the release published. Verify before extracting, not after.
 
-The expected digests for `v0.1.1`, as published:
+The expected digests for `v0.1.2`, as published:
 
 | Archive | SHA-256 |
 |---|---|
-| `…-x86_64-unknown-linux-gnu.tar.gz` | <code class="sl-digest">3b438d69726f2623adb4b9e8daf20c43741a1b1f778392e3d38401f6b0dc41d5</code> |
-| `…-aarch64-unknown-linux-gnu.tar.gz` | <code class="sl-digest">846724c31219638d79cbb247df625f4839883edd4716dc963d8300a840def75d</code> |
-| `…-x86_64-apple-darwin.tar.gz` | <code class="sl-digest">22caf9ab1283dd804bcd79508ec3c290ce0fa5101157449a17afa6e576d1ddfa</code> |
-| `…-aarch64-apple-darwin.tar.gz` | <code class="sl-digest">1a13c896babd573b1750fa73d952227bc381e5a27ddfc8a8bb66eb1c00f299e0</code> |
-| `…-x86_64-pc-windows-msvc.zip` | <code class="sl-digest">d9a67c94605fb0cba778b1606b1628be3961c93f0348d825085e3eeb74a103fb</code> |
+| `…-x86_64-unknown-linux-gnu.tar.gz` | <code class="sl-digest">c2b2bcf5f01d2591b44a411b7c6724b4cc0c00671a8062e6a82deb26cea89538</code> |
+| `…-aarch64-unknown-linux-gnu.tar.gz` | <code class="sl-digest">14e8d240a2f1b3143daaba60f80927a8831bdf2747dacf7d27262f77095ee743</code> |
+| `…-x86_64-apple-darwin.tar.gz` | <code class="sl-digest">9b4127e0e85e3df1b3a1574ebfe818bcaa3b9479bdd05130a49444e90d4d5760</code> |
+| `…-aarch64-apple-darwin.tar.gz` | <code class="sl-digest">3b0591184b1ac0c8ed85073e13815f55a41d1b28477cd4f45e0a7260facfbca4</code> |
+| `…-x86_64-pc-windows-msvc.zip` | <code class="sl-digest">5e678e6c337f7eb0c0128c1f0ecb855f23dbab05b3b88646de6680f4f5b9f27a</code> |
 
 Digests are platform-specific. Pin the one for the platform you install on, and re-read it from the release page rather than from a blog post or a lockfile — every re-release rebuilds the archives and changes them.
 

@@ -1,0 +1,27 @@
+name: Bug report
+description: Report an incorrect finding, missed pattern, crash, or documentation defect.
+title: "bug: "
+body:
+  - type: markdown
+    attributes:
+      value: Do not include live third-party exploits or secrets. The linter aids review; it is not an audit.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the rule ID, command, and relevant output.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Provide a small contract snippet or fixture that demonstrates the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true

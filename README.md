@@ -13,7 +13,7 @@
 
 `soroban-lint-core` is a Rust library and CLI that reviews Soroban contract source for risky code patterns. soroban-lint performs syntactic, per-file analysis of Soroban contract source using the Rust AST. It flags patterns associated with missing authorization checks, panic paths, unchecked arithmetic, and storage hazards in `#[contractimpl]` functions. It does not expand macros, resolve types, or follow calls across files, so it can miss real issues (false negatives) and flag safe code (false positives). A clean report is not evidence a contract is secure, and this tool is not a substitute for an audit.
 
-[Docs](https://stellar-soroban-lint.github.io/soroban-lint-core/) · [Playground](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal) · [GitHub Action](https://github.com/Stellar-Soroban-Lint/soroban-lint-action) · [Demo PR](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal/pull/1) · [Issues](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/issues)
+[Docs](https://stellar-soroban-lint.github.io/soroban-lint-core/) · [Playground](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal) · [GitHub Action](https://github.com/Stellar-Soroban-Lint/soroban-lint-action) · [Demo PR #1 (closed): annotations](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal/pull/1) · [Demo PR #2 (merged): passing run](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal/pull/2) · [Issues](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/issues)
 
 ## What it does
 
@@ -36,17 +36,17 @@ The pinned `stellar/soroban-examples` corpus produced 103 findings across 129 Ru
 
 ## Quick start
 
-Download the Linux x86_64 v0.1.1 release and verify the published SHA-256 before extraction:
+Download the Linux x86_64 v0.1.2 release and verify the published SHA-256 before extraction:
 
 ```bash
-gh release download v0.1.1 --repo Stellar-Soroban-Lint/soroban-lint-core \
-  --pattern 'soroban-lint-v0.1.1-x86_64-unknown-linux-gnu.tar.gz*'
-sha256sum -c soroban-lint-v0.1.1-x86_64-unknown-linux-gnu.tar.gz.sha256
-tar -xzf soroban-lint-v0.1.1-x86_64-unknown-linux-gnu.tar.gz
-./soroban-lint-v0.1.1-x86_64-unknown-linux-gnu/soroban-lint check ./contracts
+gh release download v0.1.2 --repo Stellar-Soroban-Lint/soroban-lint-core \
+  --pattern 'soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz*'
+sha256sum -c soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz.sha256
+tar -xzf soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz
+./soroban-lint-v0.1.2-x86_64-unknown-linux-gnu/soroban-lint check ./contracts
 ```
 
-The verified archive SHA-256 is `3b438d69726f2623adb4b9e8daf20c43741a1b1f778392e3d38401f6b0dc41d5`. See the [release page](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/tag/v0.1.1) for other platforms and checksums.
+The verified archive SHA-256 is `c2b2bcf5f01d2591b44a411b7c6724b4cc0c00671a8062e6a82deb26cea89538`. See the [release page](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/tag/v0.1.2) for other platforms and checksums.
 
 Write SARIF to a file by redirecting the command output:
 
@@ -80,7 +80,8 @@ The data flow is `source → syn AST → rule visitors → Diagnostics → text 
 | [soroban-lint-core](https://github.com/Stellar-Soroban-Lint/soroban-lint-core) | Rust analysis engine, CLI, and WASM build. |
 | [soroban-lint-action](https://github.com/Stellar-Soroban-Lint/soroban-lint-action) | Runs the CLI in GitHub Actions. |
 | [soroban-lint-portal](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal) | Browser playground source. |
-| Demo PRs ([#1](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal/pull/1), [#2](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal/pull/2)) | Example action runs; there is no separate demo repository. |
+| [PR #1 (closed): annotations on intentionally vulnerable contracts](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal/pull/1) | Findings and check annotations; kept for reference. |
+| [PR #2 (merged): passing run](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal/pull/2) | `fail-on: never`, five inline annotations, and passing checks. |
 
 ## Maintainers
 
