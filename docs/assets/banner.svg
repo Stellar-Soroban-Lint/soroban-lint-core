@@ -1,0 +1,43 @@
+<!--
+  README banner: 960x200, light background, safe to sit under a heading.
+
+  The wordmark is live <text>, not outlines. That is a deliberate trade: outlined
+  text would render identically everywhere but cannot be selected, searched, or
+  restyled, and this file is only ever shown as an image. If it ever has to
+  render somewhere with no usable fonts, convert the wordmark to paths then —
+  do not leave it depending on a font that may not exist.
+
+  The canvas is 960 rather than the more usual 800 because the third line is the
+  longest text in the file and a 720-wide canvas clipped it mid-word. At 960 the
+  longest line ends around x=800, leaving a comfortable right margin.
+
+  That third line is the scope caveat, shortened. A banner is the first thing
+  anyone reads, and a linter banner that said only "fast linter" would be the
+  overclaiming this project committed not to do.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 200" width="960" height="200" role="img" aria-label="soroban-lint — syntactic static analysis for Soroban smart contracts">
+  <rect width="960" height="200" fill="#FFFFFF" />
+
+  <!-- the mark, scaled 3x from the 32-unit grid -->
+  <g transform="translate(64 52) scale(3)">
+    <g fill="#1F2937">
+      <rect x="2" y="3" width="4" height="26" rx="2" />
+      <rect x="26" y="3" width="4" height="26" rx="2" />
+      <rect x="10" y="7" width="12" height="4" rx="2" fill="#9CA3AF" />
+      <rect x="10" y="21" width="12" height="4" rx="2" fill="#9CA3AF" />
+    </g>
+    <rect x="10" y="14" width="12" height="4" rx="2" fill="#7C3AED" />
+  </g>
+
+  <text x="196" y="102"
+        font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace"
+        font-size="44" font-weight="700" letter-spacing="-1" fill="#111827">soroban-lint</text>
+
+  <text x="198" y="140"
+        font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="19" fill="#374151">Syntactic, per-file static analysis for Soroban contracts</text>
+
+  <text x="198" y="170"
+        font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="15" fill="#6B7280">Not an audit. It does not expand macros, resolve types, or follow calls across files.</text>
+</svg>

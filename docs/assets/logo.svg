@@ -1,0 +1,25 @@
+<!--
+  soroban-lint mark: a source file with one line called out.
+
+  Two elements, two colours. The brackets are the file; the three bars are its
+  lines; the middle bar is the one the linter flagged. Nothing here refers to
+  Stellar, to the SDF, or to any other mark — it is a bracketed block with a
+  highlighted line, which is what the tool does.
+
+  Geometry is on a 32-unit grid so the mark lands on whole pixels at 16 px:
+  brackets are 4 units (2 px), bars are 4 units (2 px), and every gap is a
+  whole number of units. There is no stroke: solid rounded rectangles only, so
+  the favicon stays crisp instead of being scaled half a pixel thin.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="soroban-lint">
+  <!-- the file -->
+  <g fill="#1F2937">
+    <rect x="2" y="3" width="4" height="26" rx="2" />
+    <rect x="26" y="3" width="4" height="26" rx="2" />
+    <!-- the lines either side of the finding -->
+    <rect x="10" y="7" width="12" height="4" rx="2" fill="#9CA3AF" />
+    <rect x="10" y="21" width="12" height="4" rx="2" fill="#9CA3AF" />
+  </g>
+  <!-- the finding -->
+  <rect x="10" y="14" width="12" height="4" rx="2" fill="#7C3AED" />
+</svg>
