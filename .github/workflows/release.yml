@@ -191,6 +191,29 @@ jobs:
           sha256sum --check <archive>.sha256
           ```
 
+          ## Rules
+
+          | ID | Rule | Default severity | Stability |
+          |---|---|---|---|
+          | SL001 | missing `require_auth` | error | stable |
+          | SL002 | panic hazards | warning | stable |
+          | SL003 | unchecked arithmetic | warning | experimental |
+          | SL004 | unbounded storage growth | warning | experimental |
+          | SL005 | missing TTL extension | info | experimental |
+          | SL006 | questionable storage type | warning | experimental |
+          | SL007 | unprotected initializer | warning | experimental |
+          | SL008 | `unsafe` / missing `#![no_std]` | warning | stable |
+
+          SL003-SL007 are experimental and off unless `--experimental` or `experimental = true`.
+
+          ## Known limitations
+
+          - No macro expansion, no type resolution, and no cross-file analysis.
+          - SL001 follows a same-file helper call one level deep; auth delegated further is missed.
+          - Parse failures are reported as `SL000`, never as a panic.
+
+          See `CHANGELOG.md` for the release entry.
+
           soroban-lint performs syntactic, per-file analysis of Soroban contract source using the Rust AST. It flags patterns associated with missing authorization checks, panic paths, unchecked arithmetic, and storage hazards in `#[contractimpl]` functions. It does not expand macros, resolve types, or follow calls across files, so it can miss real issues (false negatives) and flag safe code (false positives). A clean report is not evidence a contract is secure, and this tool is not a substitute for an audit.
           EOF
           cat notes.md
