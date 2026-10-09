@@ -45,7 +45,11 @@ jobs:
             target: x86_64-pc-windows-msvc
             ext: zip
     steps:
+      # Build the requested ref, not the default branch, so a `workflow_dispatch`
+      # run for an older tag does not ship binaries built from newer code.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version || github.ref }}
 
       - name: Add Rust target
         run: rustup target add ${{ matrix.target }}
@@ -99,6 +103,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version || github.ref }}
 
       - uses: dtolnay/rust-toolchain@stable
         with:
