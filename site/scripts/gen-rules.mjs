@@ -65,7 +65,7 @@ const REQUIRED = {
 const releaseTag = readFileSync(VERSION_FILE, "utf8").trim();
 if (!/^v\d+\.\d+\.\d+$/.test(releaseTag)) {
   throw new Error(
-    `SOROBAN_LINT_VERSION contains "${releaseTag}", which is not a release tag like v0.1.1.`,
+    `SOROBAN_LINT_VERSION contains "${releaseTag}", which is not a release tag like v0.1.2.`,
   );
 }
 const expectedVersion = releaseTag.replace(/^v/, "");

@@ -4,7 +4,7 @@ The [soroban-lint portal](https://github.com/Stellar-Soroban-Lint/soroban-lint-p
 
 ## What it actually runs
 
-`soroban-lint-core` — the same crate that produces the CLI and that the GitHub Action downloads — is compiled to WebAssembly with `wasm-pack`, optimized with `wasm-opt -Oz`, and vendored into the portal's `src/wasm/` directory. The bytes come from the published `v0.1.1` release asset, not from a local build, so the browser runs what a `cargo install` would give you.
+`soroban-lint-core` — the same crate that produces the CLI and that the GitHub Action downloads — is compiled to WebAssembly with `wasm-pack` and vendored into the portal's `src/wasm/` directory. The portal currently uses an unoptimized build from source commit `9c665ace6c1b2494ea4ab9373064b699b2a88789` (`v0.1.1`), because the published optimized WASM assets for `v0.1.1` and `v0.1.2` fail during initialization. The raw `v0.1.1` build passes the portal's full 151-file parity check against the `v0.1.1` CLI. Its compatibility pin and hashes are recorded in the [portal provenance file](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal/blob/main/src/wasm/PROVENANCE.md).
 
 There are two exports, and they mirror the CLI's JSON contract exactly:
 
@@ -15,8 +15,8 @@ There are two exports, and they mirror the CLI's JSON contract exactly:
 
 Because the contracts are identical, the portal cannot drift away from the CLI quietly. The build of this documentation site is guarded by the same command — the [rule pages](/rules/) are generated from `rulesJson()`'s CLI equivalent, not hand-typed.
 
-::: warning The v0.1.0 tag was a stub
-The `soroban-lint-wasm-v0.1.0.tar.gz` asset predates the WebAssembly implementation and exports only `version()`. It is the `v0.1.1` asset that contains the real linter. If you vendor the WASM package yourself, take `v0.1.1` or later. This is recorded in the [changelog](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/blob/main/CHANGELOG.md).
+::: warning Published optimized WASM assets fail initialization
+The `soroban-lint-wasm-v0.1.0.tar.gz` asset predates the WebAssembly implementation and exports only `version()`. The published optimized `v0.1.1` and `v0.1.2` WASM assets export `lintSource`, but their `__wbindgen_externrefs` export points at a fixed-size function table; the JavaScript glue then fails when it tries to grow that table. The portal uses a raw `wasm-pack` build from the `v0.1.1` source commit as a compatibility pin. See the [portal provenance](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal/blob/main/src/wasm/PROVENANCE.md).
 :::
 
 ## The parity guarantee
@@ -31,11 +31,11 @@ Provenance for the vendored binary is recorded in the portal's `src/wasm/PROVENA
 
 | | |
 |---|---|
-| Release | [`v0.1.1`](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/tag/v0.1.1) |
-| Asset | `soroban-lint-wasm-v0.1.1.tar.gz` |
+| Compatibility pin | `v0.1.1` (unoptimized source build) |
 | Source commit | `9c665ace6c1b2494ea4ab9373064b699b2a88789` |
-| Vendored `.wasm` size | 714,866 bytes |
-| Vendored `.wasm` SHA-256 | <code class="sl-digest">bd2f09d0618aee3819223ee5a905b2864f0fdfaa3a9f089432b492dc8f589ecb</code> |
+| Build | `wasm-pack build soroban-lint-wasm --target web --release --out-dir pkg` |
+| Vendored `.wasm` size | 1,208,552 bytes |
+| Vendored `.wasm` SHA-256 | <code class="sl-digest">0fa2262183bd1ae3bbba9e1bb24b8af72ed64c880c863d11785e7a3effea4f26</code> |
 
 ## Privacy
 
