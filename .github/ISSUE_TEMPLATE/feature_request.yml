@@ -1,0 +1,17 @@
+name: Feature request
+description: Suggest a narrowly scoped improvement to the linter or documentation.
+title: "feature: "
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Problem to solve
+      description: Explain the concrete Soroban use case and current limitation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
