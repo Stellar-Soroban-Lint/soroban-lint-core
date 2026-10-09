@@ -1,5 +1,7 @@
 [package]
 name = "soroban-lint-wasm"
+# Not a crates.io crate: the wasm-pack output is consumed as a release asset.
+publish = false
 description = "WebAssembly bindings for soroban-lint."
 version.workspace = true
 edition.workspace = true

@@ -7,6 +7,9 @@ rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 homepage.workspace = true
+readme = "../README.md"
+keywords = ["stellar", "soroban", "linter", "static-analysis", "cli"]
+categories = ["development-tools", "command-line-utilities"]
 
 [[bin]]
 name = "soroban-lint"
