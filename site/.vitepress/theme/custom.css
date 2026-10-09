@@ -1,0 +1,90 @@
+/**
+ * Custom styles.
+ *
+ * Two groups only: the feature grid used on the home page, and small typographic
+ * adjustments for the generated rule pages. The rule pages are built from a
+ * script, so they have to look deliberate without any per-page styling.
+ */
+
+:root {
+  --vp-c-brand-1: #6d28d9;
+  --vp-c-brand-2: #7c3aed;
+  --vp-c-brand-3: #8b5cf6;
+  --vp-c-brand-soft: rgba(109, 40, 217, 0.14);
+
+  --sl-card-bg: var(--vp-c-bg-soft);
+}
+
+.dark {
+  --vp-c-brand-1: #a78bfa;
+  --vp-c-brand-2: #8b5cf6;
+  --vp-c-brand-3: #7c3aed;
+  --vp-c-brand-soft: rgba(139, 92, 246, 0.16);
+
+  --sl-card-bg: rgba(255, 255, 255, 0.03);
+}
+
+/* Home page feature grid. */
+
+.sl-features .sl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.sl-features .sl-card {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  background: var(--sl-card-bg);
+  padding: 16px 18px;
+}
+
+.sl-features .sl-card > :first-child {
+  margin-top: 0;
+}
+
+.sl-features .sl-card > :last-child {
+  margin-bottom: 0;
+}
+
+/* A rule of thumb rather than a section break: h2s on these pages are short
+   and frequent, and a full-width rule under every one is noise. The first h2
+   after the page title gets none. */
+
+.vp-doc h2 {
+  margin-top: 40px;
+  padding-top: 8px;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc h2:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* The attribute table at the top of each generated rule page reads as a
+   definition list, not as data. */
+
+.vp-doc table td:first-child {
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+  width: 1%;
+}
+
+/* SHA-256 digests are 64 characters. Letting them wrap mid-string makes them
+   impossible to compare against a release page by eye, so they are kept intact
+   on wide viewports and only allowed to break on narrow ones. */
+
+.vp-doc code {
+  word-break: break-word;
+}
+
+@media (min-width: 640px) {
+  .vp-doc .sl-digest {
+    display: inline-block;
+    word-break: normal;
+    white-space: nowrap;
+  }
+}

@@ -16,6 +16,7 @@ pkg/
 # release.
 site/.cache/
 site/.vitepress/cache/
+site/.vitepress/.temp/
 site/.vitepress/dist/
 
 # `sync-docs.mjs` copies these out of the repository at build time. They must not
