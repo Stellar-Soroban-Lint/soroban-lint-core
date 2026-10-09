@@ -1,0 +1,20 @@
+<!--
+  Dark-theme variant of the mark. Identical geometry to logo.svg; only the two
+  colours change, so the two can never drift apart shape-wise.
+
+  The greys are lifted (slate-200 / slate-400) rather than pure white so the
+  mark keeps its two-tone reading against a dark page instead of flattening into
+  a single bright blob.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="soroban-lint">
+  <!-- the file -->
+  <g fill="#E5E7EB">
+    <rect x="2" y="3" width="4" height="26" rx="2" />
+    <rect x="26" y="3" width="4" height="26" rx="2" />
+    <!-- the lines either side of the finding -->
+    <rect x="10" y="7" width="12" height="4" rx="2" fill="#6B7280" />
+    <rect x="10" y="21" width="12" height="4" rx="2" fill="#6B7280" />
+  </g>
+  <!-- the finding -->
+  <rect x="10" y="14" width="12" height="4" rx="2" fill="#A78BFA" />
+</svg>

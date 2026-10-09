@@ -5,3 +5,22 @@ dist/
 *.wasm
 pkg/
 /mutants.out
+
+# The documentation site lives in `site/` and builds with Node. `node_modules/`
+# and `dist/` are already covered above; these two are its own.
+#
+# `site/.cache/` is the verified copy of the pinned release archive that
+# `scripts/gen-rules.mjs` downloads. It is deliberately not committed: it is
+# platform-specific, and committing it would mean the digest check in the
+# generator could be satisfied by a file in the repository rather than by the
+# release.
+site/.cache/
+site/.vitepress/cache/
+
+# `sync-docs.mjs` copies these out of the repository at build time. They must not
+# be committed, or the copies and the originals could disagree.
+site/spec/
+site/architecture/
+site/benchmarks/
+site/writing-rules/
+site/changelog/

@@ -1,0 +1,21 @@
+<!--
+  Favicon.
+
+  Same geometry as logo.svg, but every neutral is a mid grey rather than the
+  near-black of the light logo. A tab strip can be light or dark and we do not
+  get to choose, so the mark has to survive both: #1F2937 would vanish against a
+  dark tab and #E5E7EB against a light one, while #6B7280 reads on either.
+
+  This is the one place the colours deliberately differ from logo.svg. Only the
+  palette changes; the geometry is byte-for-byte the same, so the mark cannot
+  drift between the header and the tab.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="soroban-lint">
+  <g fill="#6B7280">
+    <rect x="2" y="3" width="4" height="26" rx="2" />
+    <rect x="26" y="3" width="4" height="26" rx="2" />
+    <rect x="10" y="7" width="12" height="4" rx="2" fill="#9CA3AF" />
+    <rect x="10" y="21" width="12" height="4" rx="2" fill="#9CA3AF" />
+  </g>
+  <rect x="10" y="14" width="12" height="4" rx="2" fill="#8B5CF6" />
+</svg>

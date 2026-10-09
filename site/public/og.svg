@@ -1,0 +1,59 @@
+<!--
+  Open Graph card source, 1200x630. Rendered to `og.png` for platforms that do
+  not accept SVG; see scripts/render-assets.sh for the exact command.
+
+  Kept as SVG rather than only as a PNG so the card stays editable — a wrong
+  colour is a one-line edit and a re-render, not a round trip through a design
+  tool. `og.png` is the committed artefact and the one the meta tags point at.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="soroban-lint — syntactic static analysis for Soroban smart contracts">
+  <rect width="1200" height="630" fill="#0F0F13" />
+
+  <!-- A single hairline grid, so the card is not a flat rectangle at thumbnail
+       size without turning into noise at full size. -->
+  <g stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="1">
+    <path d="M0 210h1200M0 420h1200M300 0v630M600 0v630M900 0v630" />
+  </g>
+
+  <!-- the mark, 5x from the 32-unit grid -->
+  <g transform="translate(96 96) scale(5)">
+    <g fill="#E5E7EB">
+      <rect x="2" y="3" width="4" height="26" rx="2" />
+      <rect x="26" y="3" width="4" height="26" rx="2" />
+      <rect x="10" y="7" width="12" height="4" rx="2" fill="#6B7280" />
+      <rect x="10" y="21" width="12" height="4" rx="2" fill="#6B7280" />
+    </g>
+    <rect x="10" y="14" width="12" height="4" rx="2" fill="#A78BFA" />
+  </g>
+
+  <text x="300" y="200"
+        font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace"
+        font-size="72" font-weight="700" letter-spacing="-2" fill="#F9FAFB">soroban-lint</text>
+
+  <text x="302" y="248"
+        font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="26" fill="#D1D5DB">Syntactic, per-file static analysis for Soroban contracts</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="21">
+    <g fill="#A78BFA"><rect x="96" y="316" width="10" height="10" rx="5" /></g>
+    <text x="124" y="327" fill="#D1D5DB">terminal</text>
+    <g fill="#A78BFA"><rect x="284" y="316" width="10" height="10" rx="5" /></g>
+    <text x="312" y="327" fill="#D1D5DB">GitHub Action</text>
+    <g fill="#A78BFA"><rect x="516" y="316" width="10" height="10" rx="5" /></g>
+    <text x="544" y="327" fill="#D1D5DB">browser (WASM)</text>
+  </g>
+
+  <!-- The scope caveat is on the card on purpose. A preview is the one place a
+       reader sees a claim with nowhere to click through to its limits. -->
+  <rect x="96" y="380" width="1008" height="1" fill="#FFFFFF" fill-opacity="0.12" />
+  <text x="96" y="428"
+        font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="22" fill="#9CA3AF">No macro expansion. No type resolution. No cross-file analysis.</text>
+  <text x="96" y="464"
+        font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="22" fill="#9CA3AF">A clean report is not evidence a contract is secure, and this is not an audit.</text>
+
+  <text x="96" y="552"
+        font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace"
+        font-size="22" fill="#A78BFA">stellar-soroban-lint.github.io/soroban-lint-core/</text>
+</svg>
