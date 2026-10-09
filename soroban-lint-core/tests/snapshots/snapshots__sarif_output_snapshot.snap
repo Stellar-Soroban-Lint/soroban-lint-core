@@ -1,6 +1,5 @@
 ---
 source: soroban-lint-core/tests/snapshots.rs
-assertion_line: 43
 expression: "render::sarif(&run(), &reg.metadata())"
 ---
 {
@@ -267,7 +266,7 @@ expression: "render::sarif(&run(), &reg.metadata())"
               }
             }
           ],
-          "version": "0.1.1"
+          "version": "0.1.2"
         }
       }
     }
