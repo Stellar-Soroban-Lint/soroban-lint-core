@@ -44,6 +44,11 @@ commit. Commit your fixtures and snapshots with the rule.
 
 See `docs/WRITING_RULES.md`. Reserve the next free `SLNNN` id.
 
+## Preparing a release
+
+See [`docs/RELEASING.md`](docs/RELEASING.md) for the release pull request checklist,
+including the docs site's pinned CLI version.
+
 ## Branch protection
 
 `main` is protected (pull request + one review + required status checks). Don't push

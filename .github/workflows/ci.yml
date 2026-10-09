@@ -37,3 +37,23 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Build on MSRV
         run: cargo build --workspace
+
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # lastUpdated reads commit timestamps for source documents.
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Install site dependencies
+        run: npm ci --prefix site
+      - name: Check the scope statement on site pages
+        run: npm --prefix site run scope
+      - name: Build site and check links
+        run: npm --prefix site run build

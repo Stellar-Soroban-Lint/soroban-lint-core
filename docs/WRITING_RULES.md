@@ -1,5 +1,7 @@
 # Writing a rule
 
+> soroban-lint performs syntactic, per-file analysis of Soroban contract source using the Rust AST. It flags patterns associated with missing authorization checks, panic paths, unchecked arithmetic, and storage hazards in `#[contractimpl]` functions. It does not expand macros, resolve types, or follow calls across files, so it can miss real issues (false negatives) and flag safe code (false positives). A clean report is not evidence a contract is secure, and this tool is not a substitute for an audit.
+
 Rules are cheap to add and easy to get wrong. A rule that "works" but has no
 true-positive fixture is worse than no rule. Follow every step.
 

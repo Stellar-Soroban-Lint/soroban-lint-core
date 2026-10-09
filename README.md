@@ -1,5 +1,7 @@
 # soroban-lint-core
 
+[![Documentation](https://img.shields.io/badge/docs-online-7C3AED)](https://stellar-soroban-lint.github.io/soroban-lint-core/)
+
 Syntactic, per-file static analysis for Soroban smart contracts, with a CLI and a
 WASM build. The engine behind [`soroban-lint-action`](https://github.com/Stellar-Soroban-Lint/soroban-lint-action)
 and the [playground](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal).
@@ -29,6 +31,9 @@ SL003–SL007 are experimental. See `docs/BENCHMARKS.md` for real-corpus results
 `experimental` rules are off unless `--experimental` or `experimental = true` in config.
 
 ## Install / build
+
+Quick start, release checksums, output formats, and the full CLI reference are in the
+[documentation](https://stellar-soroban-lint.github.io/soroban-lint-core/).
 
 ```bash
 cargo build --release -p soroban-lint-cli      # binary: target/release/soroban-lint

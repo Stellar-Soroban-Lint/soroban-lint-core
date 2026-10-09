@@ -1,0 +1,26 @@
+{
+  "name": "soroban-lint-site",
+  "version": "0.1.1",
+  "private": true,
+  "description": "Documentation site for soroban-lint, built from the documents in this repository.",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "sync": "node scripts/sync-docs.mjs",
+    "rules": "node scripts/gen-rules.mjs",
+    "scope": "node scripts/check-scope.mjs",
+    "assets": "bash scripts/render-assets.sh",
+    "assets:check": "bash scripts/render-assets.sh --check",
+    "generate": "npm run sync && npm run rules",
+    "dev": "npm run generate && vitepress dev .",
+    "build": "npm run generate && vitepress build .",
+    "preview": "vitepress preview .",
+    "verify": "npm run assets:check && npm run scope && npm run build"
+  },
+  "devDependencies": {
+    "vitepress": "1.6.4"
+  }
+}

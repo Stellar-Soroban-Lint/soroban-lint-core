@@ -49,6 +49,9 @@ fn every_documentation_surface_carries_the_statement_verbatim() {
     let statement = normative_statement();
     let surfaces = [
         "SPEC.md",
+        // The landing page makes the main capability claim and must carry its
+        // limits in the same section, just like the repository docs.
+        "site/index.md",
         "README.md",
         "CONTRIBUTING.md",
         "SECURITY.md",
