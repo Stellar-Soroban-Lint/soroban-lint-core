@@ -3,6 +3,16 @@
 All notable changes to `soroban-lint` are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-10-09
+
+First release whose `soroban-lint-wasm` package contains the real linter.
+
+### Fixed
+
+- The `v0.1.0` tag predated the WebAssembly implementation, so its
+  `soroban-lint-wasm-v0.1.0.tar.gz` asset was a stub exporting only `version()`.
+  `v0.1.1` is cut from the commit that exposes `lintSource` and `rulesJson`.
+
 ## [0.1.0] - 2026-10-09
 
 First release. Published to crates.io as `soroban-lint-core` and `soroban-lint-cli`,

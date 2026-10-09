@@ -16,7 +16,7 @@ name = "soroban-lint"
 path = "src/main.rs"
 
 [dependencies]
-soroban-lint-core = { path = "../soroban-lint-core", version = "0.1.0" }
+soroban-lint-core = { path = "../soroban-lint-core", version = "0.1.1" }
 clap.workspace = true
 walkdir.workspace = true
 globset.workspace = true

@@ -8,7 +8,7 @@ and the [playground](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal
 
 ## Status
 
-`0.1.0`. Published to crates.io as [`soroban-lint-core`](https://crates.io/crates/soroban-lint-core)
+`0.1.1`. Published to crates.io as [`soroban-lint-core`](https://crates.io/crates/soroban-lint-core)
 and [`soroban-lint-cli`](https://crates.io/crates/soroban-lint-cli), and released as prebuilt
 binaries with SHA-256 checksums. Eight rules (SL001–SL008): SL001, SL002, and SL008 are stable;
 SL003–SL007 are experimental. See `docs/BENCHMARKS.md` for real-corpus results.
