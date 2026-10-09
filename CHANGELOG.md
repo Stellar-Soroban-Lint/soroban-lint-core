@@ -5,6 +5,12 @@
 All notable changes to `soroban-lint` are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-10-09
+
+### Changed
+
+- Reworked the README with installation, CLI, rule, architecture, benchmark, and support information. The package includes the README as published on crates.io.
+
 ## [0.1.1] - 2026-10-09
 
 First release whose `soroban-lint-wasm` package contains the real linter.
