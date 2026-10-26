@@ -73,14 +73,15 @@ The repositories carry seeded, triaged issues. Each body states the problem, why
 
 | Repository | Issues | What lives there |
 |---|---|---|
-| [`soroban-lint-core`](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/issues) | 5 | Rule work and CLI ergonomics: the false-positive template, shell completions, skipping test modules, an `SL009` for hardcoded addresses, and baseline files. |
+| [`soroban-lint-core`](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/issues) | 5 | Rule work and CLI ergonomics: the false-positive template, shell completions, skipping test modules (fixed on `main`, ships next release), an `SL009` for hardcoded addresses, and baseline files. |
 | [`soroban-lint-action`](https://github.com/Stellar-Soroban-Lint/soroban-lint-action/issues) | 5 | CI integration: checksum-mismatch tests, a workflow cookbook, quoting-safe `args`, changed-files-only input, and a Docker variant. |
 | [`soroban-lint-portal`](https://github.com/Stellar-Soroban-Lint/soroban-lint-portal/issues) | 5 | Playground: catalog search, Open Graph and SEO metadata, downloading diagnostics, keyboard accessibility, and a multi-file workspace. |
 
-Two of these are the most valuable contributions available, because they fix a limitation this project has already confessed to in writing:
+The false-positive template is the most valuable contribution available, because it fixes a limitation this project has already confessed to in writing:
 
-- **Skipping test modules.** Files named `test.rs` that are really `#[cfg(test)]` modules produce 2 SL002 and 2 SL005 findings on the pinned corpus. The fix skips such files during a directory walk while still honoring an explicitly named single-file target.
 - **The false-positive template and triage guide.** Two real false positives were caught during benchmarking, but only because someone triaged them by hand.
+
+The test-module false positive is fixed on `main`: a directory walk skips `src/test.rs` and `src/**/tests.rs`, while an explicitly named file is still analyzed. That removes four findings from the pinned corpus (2 SL002, 2 SL005) and is covered by `soroban-lint-cli`'s walker tests.
 
 ## Pull request checklist
 

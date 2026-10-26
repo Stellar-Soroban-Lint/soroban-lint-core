@@ -74,7 +74,7 @@ Those are the limits of the technique, stated here rather than in a footnote:
 - **No type resolution.** Type evidence is syntactic: literals, explicit annotations, and `as` casts. A value loaded from storage and added to another carries no evidence and is not flagged.
 - **No cross-file analysis.** SL001 follows a helper call exactly one level deep, and only within the same file. Nothing else follows calls.
 
-Both failure modes are real and both are expected: the linter can miss genuine issues (**false negatives**) and can flag safe code (**false positives**). On the pinned benchmark corpus it produced 103 findings across 129 files, and four of those were test-module findings it could not identify as tests.
+Both failure modes are real and both are expected: the linter can miss genuine issues (**false negatives**) and can flag safe code (**false positives**). On the pinned benchmark corpus it produces 99 findings across 129 files; `#[cfg(test)]` module files are skipped by the walker, so findings stay in code that ships.
 
 > soroban-lint performs syntactic, per-file analysis of Soroban contract source using the Rust AST. It flags patterns associated with missing authorization checks, panic paths, unchecked arithmetic, and storage hazards in `#[contractimpl]` functions. It does not expand macros, resolve types, or follow calls across files, so it can miss real issues (false negatives) and flag safe code (false positives). A clean report is not evidence a contract is secure, and this tool is not a substitute for an audit.
 
@@ -104,7 +104,7 @@ One page per rule, each generated from the released binary's own metadata.
 
 ### [Benchmarks](/benchmarks/)
 
-The 103-finding corpus run, with per-rule triage and the findings that were fixed in code.
+The 99-finding corpus run, with per-rule triage and the findings that were fixed in code.
 
 </div>
 

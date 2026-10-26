@@ -17,7 +17,9 @@
 
 ## What it does
 
-The CLI parses Rust source and reports rule findings as text, JSON, or SARIF. The rule list below is generated from `soroban-lint rules --format json`.
+The CLI parses Rust source and reports rule findings as text, JSON, or SARIF. A directory walk skips `#[cfg(test)]` module files such as `src/test.rs`; name a file explicitly, or set `include-tests = true`, to lint test code too. The rule list below is generated from `soroban-lint rules --format json`.
+
+The three repositories form one toolchain: Core owns the analyzer and release artifacts, the Action invokes the released CLI in CI, and the Portal runs the shared analyzer as WebAssembly in the browser. See [The ecosystem](#the-ecosystem) for repository links and roles.
 
 | ID | Name | Default severity | Stability |
 |---|---|---|---|
@@ -32,7 +34,7 @@ The CLI parses Rust source and reports rule findings as text, JSON, or SARIF. Th
 
 SL003–SL007 are experimental and off by default. Enable them with `--experimental` or `experimental = true` in the config.
 
-The pinned `stellar/soroban-examples` corpus produced 103 findings across 129 Rust files at commit [`03d42aa6b973dcf3a453a99d0c6a6e8d25a196e2`](https://github.com/stellar/soroban-examples/commit/03d42aa6b973dcf3a453a99d0c6a6e8d25a196e2). See [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md) for the rule breakdown and triage.
+The pinned `stellar/soroban-examples` corpus produced 99 findings across its 129 Rust files at commit [`03d42aa6b973dcf3a453a99d0c6a6e8d25a196e2`](https://github.com/stellar/soroban-examples/commit/03d42aa6b973dcf3a453a99d0c6a6e8d25a196e2). The walk skips 35 `#[cfg(test)]` module files, so findings are only reported in code that ships. See [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md) for the rule breakdown and triage.
 
 ## Quick start
 
@@ -60,6 +62,7 @@ A project config can enable the stable rules and select source paths:
 experimental = false
 include = ["src/**/*.rs"]
 exclude = ["target/**"]
+include-tests = false
 
 [rules]
 SL006 = "off"
@@ -72,6 +75,24 @@ Suppress one finding with `// soroban-lint-ignore: SL005`, or suppress findings 
 ## Architecture
 
 The data flow is `source → syn AST → rule visitors → Diagnostics → text | JSON | SARIF | WASM`. The CLI reads Rust source and parses each file into a `syn` AST; rule visitors produce Diagnostics that the CLI formats or the core compiles to WASM for the browser. The analysis does not expand macros, resolve types, or perform cross-file analysis. Those limits can produce false positives and false negatives, so findings need review. See the [architecture guide](https://stellar-soroban-lint.github.io/soroban-lint-core/architecture/) for details.
+
+## Verification
+
+From a clean checkout, run the Rust formatting, lint, and test checks:
+
+```bash
+cargo fmt --all --check
+cargo clippy --workspace --all-targets --all-features -- -D warnings
+cargo test --workspace
+```
+
+`scripts/verify.sh` runs those three, then builds the CLI and reproduces the benchmark in
+[`docs/BENCHMARKS.md`](docs/BENCHMARKS.md): it prints the per-rule counts, fails if any finding
+lands in a `#[cfg(test)]` module, and fails if the document quotes a total the binary no longer
+produces. The corpus lives in the portal repository; set `SOROBAN_LINT_CORPUS` to a
+`stellar/soroban-examples` checkout to run it without that sibling, or pass `--no-corpus`.
+
+The CI workflow also builds the WASM target and checks the documentation scope statement. See [CI](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/actions/workflows/ci.yml).
 
 ## The ecosystem
 

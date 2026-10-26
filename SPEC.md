@@ -105,6 +105,10 @@ experimental = false
 include = ["src/**/*.rs", "contracts/**/*.rs"]
 exclude = ["target/**", "tests/**"]
 
+# Analyze `#[cfg(test)]` module files (`src/test.rs`) instead of skipping them
+# during a directory walk. Default false; an explicitly named file is always analyzed.
+include-tests = false
+
 [rules]
 # Shorthand: "off" | "error" | "warning" | "info"
 SL006 = "off"
@@ -122,12 +126,14 @@ Semantics:
 - `severity` overrides `RuleMeta::default_severity` for that rule.
 - Unknown rule IDs in `[rules]` produce an `SL000` error at the config file.
 - Unknown top-level keys produce an `SL000` warning (typo guard).
+- `include-tests` restores analysis of files the walker infers are `#[cfg(test)]` modules (see §3). It is the only walker setting that cannot be expressed as an `exclude` glob, because the inference is about module identity rather than path patterns.
 
 ```rust
 pub struct Config {
     pub experimental: bool,
     pub include: Vec<String>,
     pub exclude: Vec<String>,
+    pub include_tests: bool,
     pub rules: std::collections::BTreeMap<String, RuleSettings>,
 }
 pub struct RuleSettings { pub enabled: Option<bool>, pub severity: Option<Severity> }
@@ -181,6 +187,7 @@ soroban-lint rules [--format json|text]
 ```
 
 - `<path>` is a file or directory. Directories are walked with `walkdir`, honoring `include`/`exclude`; `.gitignore` honored only if `ignore` is added (deferred; documented).
+- **Test modules.** A directory walk skips files inferred to be `#[cfg(test)]` modules — a `test.rs`/`tests.rs` inside a `src` directory. The attribute is on the parent's `mod test;` line, which per-file analysis never sees, so path shape is the only evidence available. An explicitly named file is always analyzed, and `include-tests = true` disables the skip. When files are skipped, the count is written to **stderr**, not to the report stream, so `text`/`json`/`sarif` output stays machine-parseable.
 - `--config` defaults to `soroban-lint.toml` in the invocation root if present.
 - `--experimental` forces experimental rules on, overriding config.
 - `--fail-on` defaults to `warning`; `never` means the tool never exits non-zero on findings.
