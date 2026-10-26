@@ -38,17 +38,17 @@ The pinned `stellar/soroban-examples` corpus produced 99 findings across its 129
 
 ## Quick start
 
-Download the Linux x86_64 v0.1.2 release and verify the published SHA-256 before extraction:
+Download the Linux x86_64 v0.2.0 release and verify the published SHA-256 before extraction:
 
 ```bash
-gh release download v0.1.2 --repo Stellar-Soroban-Lint/soroban-lint-core \
-  --pattern 'soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz*'
-sha256sum -c soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz.sha256
-tar -xzf soroban-lint-v0.1.2-x86_64-unknown-linux-gnu.tar.gz
-./soroban-lint-v0.1.2-x86_64-unknown-linux-gnu/soroban-lint check ./contracts
+gh release download v0.2.0 --repo Stellar-Soroban-Lint/soroban-lint-core \
+  --pattern 'soroban-lint-v0.2.0-x86_64-unknown-linux-gnu.tar.gz*'
+sha256sum -c soroban-lint-v0.2.0-x86_64-unknown-linux-gnu.tar.gz.sha256
+tar -xzf soroban-lint-v0.2.0-x86_64-unknown-linux-gnu.tar.gz
+./soroban-lint-v0.2.0-x86_64-unknown-linux-gnu/soroban-lint check ./contracts
 ```
 
-The verified archive SHA-256 is `c2b2bcf5f01d2591b44a411b7c6724b4cc0c00671a8062e6a82deb26cea89538`. See the [release page](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/tag/v0.1.2) for other platforms and checksums.
+The verified archive SHA-256 is `4600bc00a191eba5b32408b913d042915f5a449300411c2cf8ff89ea09255d5f`. See the [release page](https://github.com/Stellar-Soroban-Lint/soroban-lint-core/releases/tag/v0.2.0) for other platforms and checksums.
 
 Write SARIF to a file by redirecting the command output:
 

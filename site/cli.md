@@ -1,6 +1,6 @@
 # CLI reference
 
-`soroban-lint` has two subcommands: `check` analyzes source, `rules` describes the registry. Everything below is the released `0.1.1` interface.
+`soroban-lint` has two subcommands: `check` analyzes source, `rules` describes the registry. Everything below is the released `0.2.0` interface.
 
 ```
 soroban-lint check <path> [--format text|json|sarif] [--config <file>]
