@@ -62,7 +62,7 @@ const DOCUMENTS = [
     out: "benchmarks/index.md",
     title: "Benchmarks",
     description:
-      "The 103-finding corpus run against stellar/soroban-examples, with per-rule triage.",
+      "The 99-finding corpus run against stellar/soroban-examples, with per-rule triage.",
     editPath: "docs/BENCHMARKS.md",
   },
   {

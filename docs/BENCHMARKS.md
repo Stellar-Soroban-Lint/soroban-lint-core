@@ -14,19 +14,22 @@ make the table look better. Counts are inputs to a promotion decision, not evide
 soroban-lint check . --experimental --format json --fail-on never
 ```
 
-Tool version: `0.1.0` (`soroban-lint` debug build from this repository).
+Tool version: `0.1.2` plus the test-module skip on `main` (unreleased; see
+[Test modules](#test-modules-are-skipped) below). The walk reports `35` files skipped as
+`#[cfg(test)]` modules on this corpus; pass `include-tests = true` in `soroban-lint.toml` to
+analyze them and reproduce the previous `103`-finding run.
 
 ## Totals
 
-**103 findings across the corpus.**
+**99 findings across the corpus.**
 
-| Rule | Findings | In `*test.rs` | Confirmed FP | Arguable | True positive |
+| Rule | Findings | In `*test.rs` (skipped) | Confirmed FP | Arguable | True positive |
 |---|---:|---:|---:|---:|---:|
 | SL001 missing-require-auth | 10 | 0 | 0 | 4 | 6 |
-| SL002 panic-hazards | 62 | 2 | 0 | 18 | 44 |
+| SL002 panic-hazards | 60 | 0 | 0 | 18 | 42 |
 | SL003 unchecked-arithmetic | 9 | 0 | 0 | 9 | 0 |
 | SL004 unbounded-storage-growth | 1 | 0 | 0 | 0 | 1 |
-| SL005 missing-ttl-extension | 21 | 2 | 0 | 21 | 0 |
+| SL005 missing-ttl-extension | 19 | 0 | 0 | 19 | 0 |
 | SL006 questionable-storage-type | 0 | 0 | 0 | 0 | 0 |
 | SL007 unprotected-initializer | 0 | 0 | 0 | 0 | 0 |
 | SL008 unsafe-and-no-std | 0 | 0 | 0 | 0 | 0 |
@@ -49,24 +52,25 @@ These were real, unexplained false positives. They were fixed in code, not paper
   (public fn writes storage, no auth) but the examples are demonstrative and a shared counter may be
   intentionally permissionless. `merkle_distribution::claim`, `pause::set`, `ttl::setup` are
   **true positives** by the rule's definition. No false positives.
-- **SL002 (62).** `unwrap`/`expect`/`panic!`/indexing in contract functions. Most are **true
+- **SL002 (60).** `unwrap`/`expect`/`panic!`/indexing in contract functions. Most are **true
   positives** under the rule's stated scope (a panic aborts the invocation). Indexing in `eth_abi`
-  is a true positive (unchecked bounds). 2 findings are in `*test.rs` files, which this linter
-  cannot tell are `#[cfg(test)]` modules (see limitation below). No false positives in shipping code.
+  is a true positive (unchecked bounds). No false positives in shipping code; test modules are no
+  longer walked at all.
 - **SL003 (9).** All are `+=`/`%` on values with explicit integer evidence. These **arguable**: the
   rule is scoped to syntactic evidence, and the examples are toy counters where overflow is
   immaterial. No false positives (every one has genuine integer evidence).
 - **SL004 (1).** `privacy-pools` grows a stored `nullifiers` collection with no visible bound.
   **True positive.**
-- **SL005 (21).** Persistent/instance writes without `extend_ttl` in the same function. **Arguable**
+- **SL005 (19).** Persistent/instance writes without `extend_ttl` in the same function. **Arguable**
   overall: some contracts extend TTL elsewhere or rely on defaults. No false positives (each write is
-  genuinely persistent/instance and genuinely lacks a same-function `extend_ttl`). 2 are in `*test.rs`.
+  genuinely persistent/instance and genuinely lacks a same-function `extend_ttl`).
 - **SL006/SL007/SL008:** no findings on this corpus.
 
 ## Promotion decision
 
 Per `SPEC.md` §4, a rule is promoted to `stable` only when the corpus shows **no unexplained false
-positives**. After the two fixes, **no rule has a confirmed false positive** on this corpus.
+positives**. After the two rule fixes and the test-module skip, **no rule has a confirmed false
+positive** on this corpus, and nothing is reported in code that does not ship.
 Promotion is nevertheless **deferred** for SL003/SL004/SL005/SL006/SL007, because:
 
 - the corpus is small and toy-heavy (mostly demonstrative contracts), and
@@ -75,12 +79,21 @@ Promotion is nevertheless **deferred** for SL003/SL004/SL005/SL006/SL007, becaus
 A second, larger corpus is required before promoting. Current status is unchanged from `SPEC.md`:
 `stable` = SL001, SL002, SL008; `experimental` = SL003–SL007.
 
-## Known limitation surfaced by this run
+## Test modules are skipped
 
-Files named `test.rs` are analyzed as ordinary source. In this corpus they are `#[cfg(test)]`
-modules included from `lib.rs`, so the `cfg(test)` attribute is not present in the file itself and
-the linter cannot see it. It therefore reports findings in test-only code (2 SL002, 2 SL005 here).
-This is a real false-positive mode and is documented rather than hidden.
+The previous run of this corpus reported `103` findings, `4` of which were in `*test.rs` files.
+Those files are `#[cfg(test)]` modules included from `lib.rs`, so the `cfg(test)` attribute is not
+in the file itself and a per-file analyzer cannot see it. That was a real false-positive mode: it
+reported findings in code that never ships.
+
+It is now fixed at the walker. A directory walk skips `src/test.rs` and `src/**/tests.rs`, reports
+the count on stderr, and leaves every other rule untouched. A file named directly on the command
+line is still analyzed — fixtures and intentional single-file runs keep working — and
+`include-tests = true` restores the old behaviour.
+
+On this corpus the walk skips `35` files, which removes the `2` SL002 and `2` SL005 findings and
+moves the total from `103` to `99`. `tests/` directories are not skipped: they are outside the
+`src` tree this heuristic keys on, and a file there is not assumed to be test-only.
 
 Reproduce:
 

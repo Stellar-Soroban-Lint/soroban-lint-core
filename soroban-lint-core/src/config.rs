@@ -7,7 +7,13 @@ use serde::Deserialize;
 use crate::diagnostic::{RuleMeta, Severity, Stability};
 use crate::error::ConfigError;
 
-const KNOWN_TOP_LEVEL: [&str; 4] = ["experimental", "include", "exclude", "rules"];
+const KNOWN_TOP_LEVEL: [&str; 5] = [
+    "experimental",
+    "include",
+    "exclude",
+    "include-tests",
+    "rules",
+];
 
 /// Top-level configuration.
 #[derive(Debug, Clone, Default)]
@@ -18,6 +24,8 @@ pub struct Config {
     pub include: Vec<String>,
     /// Exclude globs applied by the CLI walker.
     pub exclude: Vec<String>,
+    /// Analyze files that are `#[cfg(test)]` modules (`src/test.rs`).
+    pub include_tests: bool,
     /// Per-rule settings keyed by rule id.
     pub rules: BTreeMap<String, RuleSettings>,
     /// Unknown top-level keys found while parsing (reported as `SL000`).
@@ -77,6 +85,8 @@ struct RawConfig {
     include: Vec<String>,
     #[serde(default)]
     exclude: Vec<String>,
+    #[serde(default, rename = "include-tests")]
+    include_tests: bool,
     #[serde(default)]
     rules: BTreeMap<String, RuleSettings>,
 }
@@ -105,6 +115,7 @@ impl Config {
             experimental: raw.experimental,
             include: raw.include,
             exclude: raw.exclude,
+            include_tests: raw.include_tests,
             rules: raw.rules,
             unknown_keys,
         })

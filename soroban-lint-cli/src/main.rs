@@ -148,6 +148,29 @@ fn walk(path: &Path, include: &Option<GlobSet>, exclude: &Option<GlobSet>) -> Ve
     files
 }
 
+/// Path of `file` relative to the invocation root, with forward slashes.
+fn relativize(file: &Path, root: &Path) -> String {
+    file.strip_prefix(root)
+        .unwrap_or(file)
+        .to_string_lossy()
+        .replace('\\', "/")
+}
+
+/// Whether a walked path is a `#[cfg(test)]` module rather than shipping source.
+///
+/// The `#[cfg(test)]` attribute lives on the `mod test;` line in the parent file,
+/// which a per-file analyzer never reads, so path shape is the only evidence
+/// available: a `test.rs`/`tests.rs` inside a `src` directory. This is applied to
+/// directory walks only; a file named directly on the command line is analyzed.
+fn is_test_module(rel: &str) -> bool {
+    let path = Path::new(rel);
+    let stem = path.file_stem().and_then(OsStr::to_str);
+    matches!(stem, Some("test" | "tests"))
+        && path
+            .components()
+            .any(|c| c.as_os_str() == OsStr::new("src"))
+}
+
 fn build_globs(patterns: &[String]) -> Option<GlobSet> {
     if patterns.is_empty() {
         return None;
@@ -188,6 +211,25 @@ fn check(args: &CheckArgs) -> ExitCode {
             .map_or_else(|| PathBuf::from("."), Path::to_path_buf)
     };
 
+    let mut skipped_tests = 0usize;
+    let mut sources = walk(&args.path, &include, &exclude);
+    if args.path.is_dir() && !config.include_tests {
+        sources.retain(|file| {
+            if is_test_module(&relativize(file, &root)) {
+                skipped_tests += 1;
+                false
+            } else {
+                true
+            }
+        });
+        if skipped_tests > 0 {
+            eprintln!(
+                "soroban-lint: skipped {skipped_tests} test module file(s); \
+                 set `include-tests = true` in soroban-lint.toml to analyze them"
+            );
+        }
+    }
+
     let mut diags: Vec<Diagnostic> = Vec::new();
 
     for key in &config.unknown_keys {
@@ -200,12 +242,8 @@ fn check(args: &CheckArgs) -> ExitCode {
         ));
     }
 
-    for file in walk(&args.path, &include, &exclude) {
-        let rel = file
-            .strip_prefix(&root)
-            .unwrap_or(&file)
-            .to_string_lossy()
-            .replace('\\', "/");
+    for file in sources {
+        let rel = relativize(&file, &root);
         match fs::read_to_string(&file) {
             Ok(src) => diags.extend(lint_source(&rel, &src, &config, &registry)),
             Err(e) => diags.push(meta_diagnostic(

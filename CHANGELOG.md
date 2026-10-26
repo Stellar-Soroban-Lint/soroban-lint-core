@@ -5,6 +5,21 @@
 All notable changes to `soroban-lint` are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `include-tests` configuration key, which restores analysis of files the walker
+  infers are `#[cfg(test)]` modules.
+
+### Fixed
+
+- Directory walks skip `#[cfg(test)]` module files (`src/test.rs`, `src/**/tests.rs`).
+  Their `cfg(test)` attribute lives on the parent's `mod test;` line, which per-file
+  analysis never sees, so they were linted as shipping source: four findings on the
+  pinned corpus (two SL002, two SL005). An explicitly named file is still analyzed, and
+  the skipped count is reported on stderr. Corpus total: 103 → 99.
+
 ## [0.1.2] - 2026-10-09
 
 ### Changed
