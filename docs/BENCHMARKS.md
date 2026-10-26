@@ -14,10 +14,9 @@ make the table look better. Counts are inputs to a promotion decision, not evide
 soroban-lint check . --experimental --format json --fail-on never
 ```
 
-Tool version: `0.1.2` plus the test-module skip on `main` (unreleased; see
-[Test modules](#test-modules-are-skipped) below). The walk reports `35` files skipped as
-`#[cfg(test)]` modules on this corpus; pass `include-tests = true` in `soroban-lint.toml` to
-analyze them and reproduce the previous `103`-finding run.
+Tool version: `0.2.0` (see [Test modules](#test-modules-are-skipped) below). The walk reports `35`
+files skipped as `#[cfg(test)]` modules on this corpus; pass `include-tests = true` in
+`soroban-lint.toml` to analyze them and reproduce the previous `103`-finding run.
 
 ## Totals
 
